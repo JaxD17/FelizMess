@@ -6,14 +6,13 @@
  */
 import gsap from 'gsap';
 import { ALBUM_CONFIG, albumPages } from './data.js';
-import { getActiveCaption } from './editor.js';
+import { getActiveField, flushActiveEditing } from './editor.js';
 import { triggerCelebrationConfetti } from './animations.js';
 
 let currentSpreadIndex = 0;
 let totalSpreadsCount = 0;
 let isAnimating = false;
 let isCoverOpen = false;
-let spreadsData = [];
 
 // =========================================================================
 // SISTEMA DE AUDIO NATIVO (WEB AUDIO API): PÁJAROS, BOSQUE Y PÁGINA
@@ -178,46 +177,34 @@ export function toggleNatureSound(forceState) {
 }
 
 // =========================================================================
-// CONSTRUCCIÓN DE LAS DOS PÁGINAS (SPREADS)
+// =========================================================================
+// GENERACIÓN DINÁMICA DE PÁGINAS (SPREADS) CON VALORES EN TIEMPO REAL
 // =========================================================================
 
-export function buildTwoPageBook() {
-  const spreadContainer = document.getElementById('spreadContainer');
-  if (!spreadContainer) return;
-
-  spreadContainer.innerHTML = '';
-  spreadsData = [];
-
-  // Spread 0: Dedicatoria Inicial
-  spreadsData.push({
-    id: 'spread-dedication',
-    leftHtml: `
+export function getSpreadLeftHtml(index) {
+  if (index === 0) {
+    const title = getActiveField('dedication__title', ALBUM_CONFIG.dedicationTitle || 'Para mi persona favorita');
+    const sub = getActiveField('dedication__sub', '1 Año y 7 Meses juntos a la orilla del mar');
+    return `
       <div class="page-half-content dedication-left-pane">
         <div class="flourish-crest">
           <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3">
             <path d="M12 2l2.4 7.4h7.6l-6.2 4.5 2.4 7.4-6.2-4.5-6.2 4.5 2.4-7.4-6.2-4.5h7.6z"/>
           </svg>
         </div>
-        <h2 class="book-intro-title">Para mi persona favorita</h2>
+        <h2 class="book-intro-title editable-entry" data-field-key="dedication__title">${title}</h2>
         <div class="ornamental-line"></div>
-        <p class="book-intro-sub">1 Año y 7 Meses juntos a la orilla del mar</p>
+        <p class="book-intro-sub editable-entry" data-field-key="dedication__sub">${sub}</p>
         <div class="wax-seal-symbol">💌</div>
       </div>
-    `,
-    rightHtml: `
-      <div class="page-half-content dedication-right-pane">
-        <div class="parchment-letter-box">
-          <p class="journal-handwritten-text dedication-body" data-page-id="dedication">${getActiveCaption('dedication', ALBUM_CONFIG.dedicationBody)}</p>
-        </div>
-        <div class="page-number-footer">pág. 01</div>
-      </div>
-    `
-  });
+    `;
+  }
 
-  // Spreads 1 a 15: Cada memoria con Foto en la izquierda y Carta en la derecha
-  albumPages.forEach((item, index) => {
-    const pageNum = index + 2;
-    const activeText = getActiveCaption(item.id, item.defaultCaption);
+  if (index >= 1 && index <= albumPages.length) {
+    const item = albumPages[index - 1];
+    const pageNum = index * 2;
+    const photoTitle = getActiveField(`${item.id}__photoTitle`, item.title);
+    const photoDate = getActiveField(`${item.id}__photoDate`, item.date);
 
     let mediaHtml = '';
     if (item.type === 'video') {
@@ -228,90 +215,130 @@ export function buildTwoPageBook() {
             controls 
             playsinline 
             preload="metadata"
-            title="${item.title}"
+            title="${photoTitle}"
           ></video>
         </div>
       `;
     } else {
       mediaHtml = `
         <div class="spread-media-frame">
-          <img src="./${item.src}" alt="${item.title}" loading="lazy" class="zoomable-photo" data-full="./${item.src}">
+          <img src="./${item.src}" alt="${photoTitle}" loading="lazy" class="zoomable-photo" data-full="./${item.src}">
           <button class="btn-zoom-photo" title="Ver foto en grande" aria-label="Ampliar">🔍</button>
         </div>
       `;
     }
 
-    spreadsData.push({
-      id: item.id,
-      leftHtml: `
-        <div class="page-half-content photo-left-pane">
-          <div class="archival-photo-mount">
-            <div class="corner-gold top-left"></div>
-            <div class="corner-gold top-right"></div>
-            ${mediaHtml}
-            <div class="photo-info-bar">
-              <span class="photo-caption-title">${item.title}</span>
-              <span class="photo-caption-date">${item.date}</span>
+    return `
+      <div class="page-half-content photo-left-pane">
+        <div class="archival-photo-mount">
+          <div class="washi-tape-strip"></div>
+          <div class="corner-gold top-left"></div>
+          <div class="corner-gold top-right"></div>
+          ${mediaHtml}
+          <div class="photo-info-bar">
+            <span class="photo-caption-title editable-entry" data-field-key="${item.id}__photoTitle">${photoTitle}</span>
+            <span class="photo-caption-date stamp-style ${(!photoDate || !photoDate.trim()) ? 'empty-date' : ''}"><span class="stamp-icon">📅</span> <span class="editable-entry" data-field-key="${item.id}__photoDate">${photoDate}</span></span>
+          </div>
+        </div>
+        <div class="page-number-footer left-footer">pág. ${String(pageNum).padStart(2, '0')}</div>
+      </div>
+    `;
+  }
+
+  // Spread final
+  const finalTitle = getActiveField('final__title', ALBUM_CONFIG.finalTitle || '¡Feliz 1 Año y 7 Meses, Mi Amor!');
+  const finalSub = getActiveField('final__sub', 'Para siempre, en cada latido');
+  return `
+    <div class="page-half-content final-left-pane">
+      <div class="beating-heart-emblem">
+        <svg width="56" height="56" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+        </svg>
+      </div>
+      <h2 class="final-book-title editable-entry" data-field-key="final__title">${finalTitle}</h2>
+      <div class="ornamental-line"></div>
+      <p class="final-book-sub editable-entry" data-field-key="final__sub">${finalSub}</p>
+    </div>
+  `;
+}
+
+export function getSpreadRightHtml(index) {
+  if (index === 0) {
+    const text = getActiveField('dedication', ALBUM_CONFIG.dedicationBody);
+    return `
+      <div class="page-half-content dedication-right-pane">
+        <div class="parchment-letter-box">
+          <button class="btn-edit-journal" title="Editar dedicatoria" aria-label="Editar">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"></path>
+              <path d="m15 5 4 4"></path>
+            </svg>
+          </button>
+          <div class="handwriting-ruled-area">
+            <p class="journal-handwritten-text dedication-body editable-entry" data-field-key="dedication">${text}</p>
+          </div>
+        </div>
+        <div class="page-number-footer right-footer">pág. 01</div>
+      </div>
+    `;
+  }
+
+  if (index >= 1 && index <= albumPages.length) {
+    const item = albumPages[index - 1];
+    const pageNum = index * 2 + 1;
+    const title = getActiveField(`${item.id}__title`, item.title);
+    const caption = getActiveField(item.id, item.defaultCaption);
+
+    return `
+      <div class="page-half-content story-right-pane">
+        <div class="story-letter-box">
+          <div class="journal-entry-box">
+            <button class="btn-edit-journal" title="Editar descripción" aria-label="Editar">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"></path>
+                <path d="m15 5 4 4"></path>
+              </svg>
+            </button>
+            <h3 class="entry-subheading">
+              <span class="editable-entry" data-field-key="${item.id}__title">${title}</span>
+              <span class="subheading-heart">♡</span>
+            </h3>
+            <div class="handwriting-ruled-area">
+              <p class="journal-handwritten-text editable-entry" data-field-key="${item.id}">${caption}</p>
             </div>
           </div>
-          <div class="page-number-footer left-footer">pág. ${String(pageNum * 2 - 2).padStart(2, '0')}</div>
         </div>
-      `,
-      rightHtml: `
-        <div class="page-half-content story-right-pane">
-          <div class="story-letter-box">
-            <div class="journal-entry-box">
-              <button class="btn-edit-journal" title="Editar descripción" aria-label="Editar">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"></path>
-                  <path d="m15 5 4 4"></path>
-                </svg>
-              </button>
-              <h3 class="entry-subheading">${item.title}</h3>
-              <div class="handwriting-ruled-area">
-                <p class="journal-handwritten-text" data-page-id="${item.id}">${activeText}</p>
-              </div>
-            </div>
-          </div>
-          <div class="page-number-footer right-footer">pág. ${String(pageNum * 2 - 1).padStart(2, '0')}</div>
-        </div>
-      `
-    });
-  });
-
-  // Spread Final: Celebración y amor
-  spreadsData.push({
-    id: 'spread-final',
-    leftHtml: `
-      <div class="page-half-content final-left-pane">
-        <div class="beating-heart-emblem">
-          <svg width="56" height="56" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-          </svg>
-        </div>
-        <h2 class="final-book-title">${ALBUM_CONFIG.finalTitle}</h2>
-        <div class="ornamental-line"></div>
-        <p class="final-book-sub">Para siempre, en cada latido</p>
+        <div class="page-number-footer right-footer">pág. ${String(pageNum).padStart(2, '0')}</div>
       </div>
-    `,
-    rightHtml: `
-      <div class="page-half-content final-right-pane">
-        <div class="final-love-letter">
-          <p class="final-letter-text">${ALBUM_CONFIG.finalMessage}</p>
-          <div class="final-letter-sign">${ALBUM_CONFIG.finalSignature}</div>
-        </div>
-        <button class="btn-celebrate-love" id="btnCelebratePage">
-          <span>Celebrar nuestro amor</span>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-          </svg>
-        </button>
-        <div class="page-number-footer right-footer">Fin ❤️</div>
-      </div>
-    `
-  });
+    `;
+  }
 
-  totalSpreadsCount = spreadsData.length;
+  // Spread final
+  const finalMessage = getActiveField('final__message', ALBUM_CONFIG.finalMessage);
+  const finalSign = getActiveField('final__sign', ALBUM_CONFIG.finalSignature);
+
+  return `
+    <div class="page-half-content final-right-pane">
+      <div class="final-love-letter">
+        <p class="final-letter-text editable-entry" data-field-key="final__message">${finalMessage}</p>
+        <div class="final-letter-sign editable-entry" data-field-key="final__sign">${finalSign}</div>
+      </div>
+      <button class="btn-celebrate-love" id="btnCelebratePage">
+        <span>Celebrar nuestro amor</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+        </svg>
+      </button>
+      <div class="page-number-footer right-footer">Fin ❤️</div>
+    </div>
+  `;
+}
+
+export function buildTwoPageBook() {
+  const spreadContainer = document.getElementById('spreadContainer');
+  if (!spreadContainer) return;
+
+  totalSpreadsCount = albumPages.length + 2;
 
   // Renderizar el spread actual en el contenedor del libro
   renderCurrentSpread();
@@ -321,26 +348,41 @@ export function buildTwoPageBook() {
 }
 
 /**
- * Renderiza el par de páginas izquierda y derecha
+ * Renderiza el par de páginas izquierda y derecha con datos frescos de localStorage
  */
-function renderCurrentSpread() {
+export function renderCurrentSpread() {
   const spreadContainer = document.getElementById('spreadContainer');
-  if (!spreadContainer || !spreadsData[currentSpreadIndex]) return;
+  if (!spreadContainer) return;
 
-  const spread = spreadsData[currentSpreadIndex];
+  const leftHtml = getSpreadLeftHtml(currentSpreadIndex);
+  const rightHtml = getSpreadRightHtml(currentSpreadIndex);
 
   spreadContainer.innerHTML = `
     <div class="open-spread-leaf left-leaf" id="leftLeaf">
       <div class="leaf-paper-surface">
-        ${spread.leftHtml}
+        ${leftHtml}
       </div>
     </div>
     <div class="open-spread-leaf right-leaf" id="rightLeaf">
       <div class="leaf-paper-surface">
-        ${spread.rightHtml}
+        ${rightHtml}
       </div>
     </div>
   `;
+
+  // Sincronizar estado contentEditable según si el modo edición está activo
+  const isEditActive = document.body.classList.contains('edit-mode-active');
+  spreadContainer.querySelectorAll('[data-field-key]').forEach(el => {
+    el.contentEditable = isEditActive ? 'true' : 'false';
+  });
+
+  const celebrateBtn = spreadContainer.querySelector('#btnCelebratePage');
+  if (celebrateBtn) {
+    celebrateBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      triggerCelebrationConfetti();
+    });
+  }
 }
 
 function updatePaginationUI() {
@@ -378,10 +420,17 @@ function pauseAllVideos() {
  */
 export function openBookCoverPhysical(onComplete) {
   const coverLeaf = document.getElementById('bookCoverLeaf');
+  const bookElement = document.getElementById('bookElement');
   if (!coverLeaf || isCoverOpen) return;
 
   isAnimating = true;
   playPageFlipSound();
+
+  // El libro se expande a dos páginas al abrirse
+  if (bookElement) {
+    bookElement.classList.remove('book-is-closed');
+    bookElement.classList.add('book-is-opening');
+  }
 
   // La portada inicia en zIndex 40 sobre las páginas cerradas
   gsap.set(coverLeaf, { zIndex: 40 });
@@ -403,6 +452,9 @@ export function openBookCoverPhysical(onComplete) {
     onComplete: () => {
       isCoverOpen = true;
       coverLeaf.style.zIndex = '2';
+      if (bookElement) {
+        bookElement.classList.remove('book-is-opening');
+      }
       isAnimating = false;
       updatePaginationUI();
       if (typeof onComplete === 'function') onComplete();
@@ -423,12 +475,13 @@ function animateHandPageTurn(direction, fromIndex, targetIndex, onTurnComplete) 
     return;
   }
 
-  const currentSpread = spreadsData[fromIndex];
-  const targetSpread = spreadsData[targetIndex];
-  if (!currentSpread || !targetSpread) {
-    if (typeof onTurnComplete === 'function') onTurnComplete();
-    return;
-  }
+  // Guardar inmediatamente cualquier texto que esté siendo tipeado antes de girar la hoja
+  flushActiveEditing();
+
+  const currentLeft = getSpreadLeftHtml(fromIndex);
+  const currentRight = getSpreadRightHtml(fromIndex);
+  const targetLeft = getSpreadLeftHtml(targetIndex);
+  const targetRight = getSpreadRightHtml(targetIndex);
 
   hand.classList.remove('hidden');
 
@@ -437,12 +490,12 @@ function animateHandPageTurn(direction, fromIndex, targetIndex, onTurnComplete) 
     spreadContainer.innerHTML = `
       <div class="open-spread-leaf left-leaf" id="leftLeaf">
         <div class="leaf-paper-surface">
-          ${currentSpread.leftHtml}
+          ${currentLeft}
         </div>
       </div>
       <div class="open-spread-leaf right-leaf" id="rightLeaf">
         <div class="leaf-paper-surface">
-          ${targetSpread.rightHtml}
+          ${targetRight}
         </div>
       </div>
     `;
@@ -455,13 +508,13 @@ function animateHandPageTurn(direction, fromIndex, targetIndex, onTurnComplete) 
     turnLeaf.innerHTML = `
       <div class="leaf-turn-face face-front">
         <div class="leaf-paper-surface">
-          ${currentSpread.rightHtml}
+          ${currentRight}
         </div>
         <div class="page-curl-shadow"></div>
       </div>
       <div class="leaf-turn-face face-back">
         <div class="leaf-paper-surface">
-          ${targetSpread.leftHtml}
+          ${targetLeft}
         </div>
         <div class="page-curl-shadow back-shadow"></div>
       </div>
@@ -507,12 +560,12 @@ function animateHandPageTurn(direction, fromIndex, targetIndex, onTurnComplete) 
     spreadContainer.innerHTML = `
       <div class="open-spread-leaf left-leaf" id="leftLeaf">
         <div class="leaf-paper-surface">
-          ${targetSpread.leftHtml}
+          ${targetLeft}
         </div>
       </div>
       <div class="open-spread-leaf right-leaf" id="rightLeaf">
         <div class="leaf-paper-surface">
-          ${currentSpread.rightHtml}
+          ${currentRight}
         </div>
       </div>
     `;
@@ -523,13 +576,13 @@ function animateHandPageTurn(direction, fromIndex, targetIndex, onTurnComplete) 
     turnLeaf.innerHTML = `
       <div class="leaf-turn-face face-front">
         <div class="leaf-paper-surface">
-          ${currentSpread.leftHtml}
+          ${currentLeft}
         </div>
         <div class="page-curl-shadow"></div>
       </div>
       <div class="leaf-turn-face face-back">
         <div class="leaf-paper-surface">
-          ${targetSpread.rightHtml}
+          ${targetRight}
         </div>
         <div class="page-curl-shadow back-shadow"></div>
       </div>
@@ -572,17 +625,20 @@ function animateHandPageTurn(direction, fromIndex, targetIndex, onTurnComplete) 
 
 export function nextSpread() {
   if (isAnimating || currentSpreadIndex >= totalSpreadsCount - 1) return;
+  flushActiveEditing();
   goToSpread(currentSpreadIndex + 1);
 }
 
 export function prevSpread() {
   if (isAnimating || currentSpreadIndex <= 0) return;
+  flushActiveEditing();
   goToSpread(currentSpreadIndex - 1);
 }
 
 export function goToSpread(targetIndex) {
   if (isAnimating || targetIndex === currentSpreadIndex || targetIndex < 0 || targetIndex >= totalSpreadsCount) return;
 
+  flushActiveEditing();
   isAnimating = true;
   pauseAllVideos();
   playPageFlipSound();
@@ -677,7 +733,7 @@ function setupBookEvents() {
 
     bookElement.addEventListener('touchstart', (e) => {
       if (e.touches.length !== 1) return;
-      if (e.target.closest('video') || e.target.isContentEditable || e.target.closest('button')) return;
+      if (e.target.closest('video') || e.target.isContentEditable || e.target.closest('[data-field-key]') || e.target.closest('button')) return;
 
       startX = e.touches[0].clientX;
       startY = e.touches[0].clientY;
@@ -705,6 +761,7 @@ function setupBookEvents() {
       if (e.target.closest('.btn-edit-journal') || 
           e.target.closest('video') || 
           e.target.isContentEditable ||
+          e.target.closest('[data-field-key]') ||
           e.target.closest('.btn-celebrate-love') ||
           e.target.closest('.btn-zoom-photo') ||
           e.target.closest('button')) {
@@ -732,8 +789,13 @@ function setupBookEvents() {
 }
 
 export function resetBookToClosedState() {
+  flushActiveEditing();
   pauseAllVideos();
+  const bookElement = document.getElementById('bookElement');
   const coverLeaf = document.getElementById('bookCoverLeaf');
+  if (bookElement) {
+    bookElement.classList.add('book-is-closed');
+  }
   if (coverLeaf) {
     coverLeaf.style.zIndex = '40';
     gsap.set(coverLeaf, { rotateY: 0 });

@@ -103,22 +103,166 @@ html, body {
   z-index: 0;
 }
 
-.forest-bg-img {
+/* ==========================================================================
+   ESCENARIO VIVO DEL BOSQUE ENCANTADO (PASEO, PERRITO, ÁRBOLES Y PÁJAROS)
+   ========================================================================== */
+.forest-journey-stage {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  object-position: center 60%;
-  transform-origin: center center;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.forest-world-scenery {
+  position: absolute;
+  inset: -10%;
+  width: 120%;
+  height: 120%;
+  transform-origin: center 65%;
   will-change: transform, filter;
   transition: filter 0.8s ease;
 }
 
-.sunbeam-overlay {
+.forest-pathway-img {
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 50% 20%, rgba(255, 235, 185, 0.22) 0%, transparent 65%);
-  pointer-events: none;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 34% 65%;
+  display: block;
+}
+
+.forest-clearing-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 30%;
+  display: block;
+  opacity: 0;
+  will-change: opacity, transform;
+}
+
+.forest-sunbeams-layer {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 25%, rgba(255, 235, 170, 0.28) 0%, rgba(255, 215, 120, 0.12) 40%, transparent 70%);
   mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+/* Indicador minimalista de tap para caminar */
+.tap-to-walk-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.65rem;
+  cursor: pointer;
+  z-index: 55;
+  margin-bottom: 2.5rem;
+  animation: pulseWalkPrompt 2s ease-in-out infinite;
+}
+
+.tap-circle-ripple {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1.5px solid var(--c-gold-foil);
+  background: rgba(201, 154, 76, 0.15);
+  box-shadow: 0 0 15px rgba(201, 154, 76, 0.4);
+  position: relative;
+}
+
+.tap-circle-ripple::after {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  border: 1px dashed rgba(201, 154, 76, 0.5);
+  animation: spinSlow 12s linear infinite;
+}
+
+@keyframes spinSlow {
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes pulseWalkPrompt {
+  0%, 100% { transform: translateY(0); opacity: 0.85; }
+  50% { transform: translateY(-6px); opacity: 1; }
+}
+
+.tap-prompt-text {
+  font-family: var(--font-serif);
+  font-size: clamp(1.05rem, 4vw, 1.25rem);
+  font-style: italic;
+  color: var(--c-text-primary);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+  letter-spacing: 0.3px;
+}
+
+/* Pajaritos volando */
+.birds-sky-container {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 15;
+  overflow: hidden;
+}
+
+.magical-forest-bird {
+  position: absolute;
+  will-change: transform;
+  filter: drop-shadow(0 4px 8px rgba(10, 25, 15, 0.45));
+}
+
+/* Mariposas flotantes */
+.butterflies-container {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 14;
+  overflow: hidden;
+}
+
+.forest-butterfly {
+  position: absolute;
+  will-change: transform;
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.35));
+}
+
+/* Enredaderas colgantes y ramas */
+.hanging-vines-frame {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 12;
+  overflow: hidden;
+}
+
+.hanging-vine {
+  position: absolute;
+  top: 0;
+  width: clamp(120px, 22vw, 220px);
+  height: clamp(260px, 45vh, 440px);
+  background-size: contain;
+  background-repeat: no-repeat;
+  will-change: transform;
+  opacity: 0.95;
+}
+
+.curtain-vines-left {
+  left: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 360'%3E%3Cpath d='M20,0 Q60,120 30,220 Q10,290 25,360' stroke='%2322381e' stroke-width='4' fill='none'/%3E%3Cpath d='M35,60 C55,50 65,70 50,85 C35,100 25,80 35,60 Z' fill='%232e5325'/%3E%3Cpath d='M25,120 C5,110 0,130 15,145 C30,160 35,140 25,120 Z' fill='%233b6b30'/%3E%3Cpath d='M35,180 C60,170 70,195 50,210 C30,225 25,200 35,180 Z' fill='%232e5325'/%3E%3Cpath d='M20,240 C0,230 -5,250 10,265 C25,280 35,260 20,240 Z' fill='%23467c3b'/%3E%3Cpath d='M25,300 C45,295 55,315 40,330 C25,345 15,320 25,300 Z' fill='%232e5325'/%3E%3C/svg%3E");
+}
+
+.curtain-vines-right {
+  right: 0;
+  transform: scaleX(-1);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 360'%3E%3Cpath d='M20,0 Q60,120 30,220 Q10,290 25,360' stroke='%2322381e' stroke-width='4' fill='none'/%3E%3Cpath d='M35,60 C55,50 65,70 50,85 C35,100 25,80 35,60 Z' fill='%232e5325'/%3E%3Cpath d='M25,120 C5,110 0,130 15,145 C30,160 35,140 25,120 Z' fill='%233b6b30'/%3E%3Cpath d='M35,180 C60,170 70,195 50,210 C30,225 25,200 35,180 Z' fill='%232e5325'/%3E%3Cpath d='M20,240 C0,230 -5,250 10,265 C25,280 35,260 20,240 Z' fill='%23467c3b'/%3E%3Cpath d='M25,300 C45,295 55,315 40,330 C25,345 15,320 25,300 Z' fill='%232e5325'/%3E%3C/svg%3E");
 }
 
 .particles-field {
@@ -144,6 +288,59 @@ html, body {
   25% { opacity: 0.8; }
   75% { opacity: 0.7; }
   100% { transform: translateY(-120px) translateX(25px); opacity: 0; }
+}
+
+/* ==========================================================================
+   CAPAS DE NIEBLA Y PROFUNDIDAD DE VIDEOJUEGO
+   ========================================================================== */
+.fog-layers {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 3;
+}
+
+.fog-layer {
+  position: absolute;
+  left: -50%;
+  width: 200%;
+  height: 100%;
+  opacity: 0.28;
+  will-change: transform;
+}
+
+.fog-layer-1 {
+  bottom: 0;
+  height: 45vh;
+  background: radial-gradient(ellipse at 50% 100%, rgba(255, 245, 215, 0.35) 0%, rgba(180, 210, 190, 0.15) 50%, transparent 80%);
+  animation: driftFog 28s linear infinite alternate;
+}
+
+.fog-layer-2 {
+  bottom: 5vh;
+  height: 35vh;
+  background: radial-gradient(ellipse at 40% 90%, rgba(255, 230, 170, 0.25) 0%, rgba(140, 185, 160, 0.12) 60%, transparent 80%);
+  animation: driftFogReverse 36s linear infinite alternate;
+  opacity: 0.22;
+}
+
+.fog-layer-3 {
+  bottom: 12vh;
+  height: 25vh;
+  background: radial-gradient(ellipse at 60% 80%, rgba(255, 250, 230, 0.2) 0%, transparent 70%);
+  animation: driftFog 44s linear infinite alternate;
+  opacity: 0.18;
+}
+
+@keyframes driftFog {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(12%); }
+}
+
+@keyframes driftFogReverse {
+  0% { transform: translateX(10%); }
+  100% { transform: translateX(-10%); }
 }
 
 /* ==========================================================================
@@ -255,37 +452,47 @@ html, body {
   inset: 0;
   z-index: 20;
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  align-items: center;
+  justify-content: center;
   width: 100%;
   height: 100%;
   min-height: 100dvh;
-  padding: env(safe-area-inset-top, 0.4rem) env(safe-area-inset-right, 0.4rem) env(safe-area-inset-bottom, 0.4rem) env(safe-area-inset-left, 0.4rem);
+  padding: env(safe-area-inset-top, 6px) env(safe-area-inset-right, 12px) env(safe-area-inset-bottom, 6px) env(safe-area-inset-left, 12px);
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 .album-stage-overlay.hidden {
   display: none;
 }
 
-/* Barra superior */
+/* Barra superior: Flotante y transparente para no robar altura vertical al libro */
 .app-topbar {
+  position: absolute;
+  top: env(safe-area-inset-top, 8px);
+  left: env(safe-area-inset-left, 12px);
+  right: env(safe-area-inset-right, 12px);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 48px;
-  padding: 0 0.85rem;
-  z-index: 45;
-  background: rgba(10, 19, 13, 0.75);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  margin: 0.4rem 0.6rem 0;
+  height: auto;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  border: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  z-index: 50;
+  pointer-events: none;
+}
+
+.app-topbar > * {
+  pointer-events: auto;
 }
 
 .icon-action-btn {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(10, 19, 13, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.16);
   color: var(--c-text-primary);
   border-radius: 8px;
   width: 36px;
@@ -294,7 +501,16 @@ html, body {
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
   transition: all 0.2s ease;
+}
+
+.icon-action-btn:hover {
+  background: rgba(22, 38, 28, 0.88);
+  border-color: var(--c-gold-foil);
+  transform: translateY(-1px);
 }
 
 .icon-action-btn:active {
@@ -303,29 +519,40 @@ html, body {
 
 .pagination-indicator {
   font-family: var(--font-sans);
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   font-weight: 600;
   color: var(--c-gold-foil);
   letter-spacing: 0.5px;
   display: flex;
   align-items: center;
   gap: 0.25rem;
+  background: rgba(10, 19, 13, 0.72);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(201, 154, 76, 0.35);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+  border-radius: 20px;
+  padding: 0.28rem 0.85rem;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .page-divider { opacity: 0.4; }
 .page-total { opacity: 0.65; }
 
 .topbar-actions {
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
+  display: none !important;
 }
 
 .pill-action-btn {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(10, 19, 13, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.16);
   color: var(--c-text-primary);
   border-radius: 8px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
   height: 36px;
   padding: 0 0.75rem;
   font-family: var(--font-sans);
@@ -367,47 +594,147 @@ html, body {
 }
 
 /* ==========================================================================
-   DIORAMA DEL LIBRO (DOS PÁGINAS ABIERTAS + ATRIL DE PIEDRA)
+   GUÍA ELEGANTE PARA GIRAR EL MÓVIL (ESTILO PAPER BY WE-TRANSFER)
+   ========================================================================== */
+.rotate-phone-hint {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.65rem;
+  background: rgba(16, 28, 20, 0.92);
+  border: 1px solid var(--c-gold-foil);
+  color: var(--c-text-primary);
+  padding: 0.45rem 0.85rem;
+  border-radius: 999px;
+  margin: 0.35rem auto 0;
+  max-width: 92vw;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6), 0 0 15px rgba(201, 154, 76, 0.25);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 44;
+  animation: floatSubtle 2.5s ease-in-out infinite;
+}
+
+@keyframes floatSubtle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+.rotate-hint-icon {
+  color: var(--c-gold-foil);
+  display: flex;
+  align-items: center;
+}
+
+.phone-rotate-svg {
+  animation: rotatePhoneAnim 3s ease-in-out infinite;
+  transform-origin: center center;
+}
+
+@keyframes rotatePhoneAnim {
+  0%, 15% { transform: rotate(0deg); }
+  45%, 70% { transform: rotate(90deg); }
+  90%, 100% { transform: rotate(0deg); }
+}
+
+.rotate-hint-text {
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: 0.2px;
+}
+
+.btn-dismiss-rotate {
+  background: none;
+  border: none;
+  color: var(--c-text-secondary);
+  font-size: 0.95rem;
+  cursor: pointer;
+  padding: 0 0.2rem;
+  transition: color 0.2s ease;
+}
+
+.btn-dismiss-rotate:hover {
+  color: #fff;
+}
+
+/* ==========================================================================
+   DIORAMA DEL LIBRO (DOS PÁGINAS ABIERTAS + PERSPECTIVA CENITAL SOBRE EL ATRIL)
    ========================================================================== */
 .book-diorama {
   flex: 1;
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  perspective: 2500px;
-  padding: 0.5rem;
+  perspective: 1600px;
+  perspective-origin: center 30%;
+  padding: 0;
+  margin: 0;
   overflow: visible;
   position: relative;
 }
 
-/* Soporte estilizado de piedra debajo del libro */
 .stone-pedestal-shelf {
-  position: absolute;
-  bottom: clamp(10px, 3vh, 30px);
-  left: 50%;
-  transform: translateX(-50%);
-  width: min(92vw, 820px);
-  height: 30px;
-  background: linear-gradient(to bottom, #72766f, #51564f, #363a34);
-  border-radius: 5px;
-  box-shadow: 
-    0 18px 45px rgba(0, 0, 0, 0.75),
-    inset 0 2px 4px rgba(255, 255, 255, 0.25);
-  border: 1px solid #454942;
-  z-index: 5;
-  pointer-events: none;
+  display: none;
 }
 
-/* Contenedor del Libro Abierto (DOS PÁGINAS) */
+/* ==========================================================================
+   ESTADO DEL LIBRO CERRADO (UN SOLO VOLUMEN CENTRADO SOBRE EL ATRIL)
+   ========================================================================== */
+.two-page-book.book-is-closed {
+  height: clamp(330px, calc(100dvh - 24px), 640px);
+  aspect-ratio: 1 / 1.38;
+  width: auto;
+  max-width: min(85vw, 420px);
+  cursor: pointer;
+  transform: rotateX(10deg);
+  transform-origin: center bottom;
+  transition: all 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.two-page-book.book-is-closed .spread-container,
+.two-page-book.book-is-closed .book-central-spine {
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.two-page-book.book-is-closed .book-cover-leaf {
+  width: 100%;
+  left: 0;
+  right: 0;
+  border-radius: 8px;
+  box-shadow: 0 30px 65px rgba(0, 0, 0, 0.88), 0 0 35px rgba(201, 154, 76, 0.45);
+}
+
+.two-page-book.book-is-closed .cover-front-face {
+  border-radius: 8px;
+}
+
+.two-page-book.book-is-opening {
+  transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Contenedor del Libro Abierto (DOS PÁGINAS CON PROPORCIÓN DORADA REALISTA) */
 .two-page-book {
   position: relative;
-  width: min(95vw, 840px);
-  height: clamp(400px, 66dvh, 580px);
-  perspective: 2400px;
+  height: clamp(330px, calc(100dvh - 24px), 640px);
+  aspect-ratio: 1.48 / 1;
+  max-width: min(95vw, 920px);
+  width: auto;
+  perspective: 2000px;
   transform-style: preserve-3d;
-  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.75);
+  transform: rotateX(10deg);
+  transform-origin: center bottom;
+  box-shadow: 
+    0 24px 60px rgba(0, 0, 0, 0.85),
+    0 8px 20px rgba(10, 20, 15, 0.6);
   border-radius: 6px;
   z-index: 10;
+  will-change: transform;
 }
 
 /* Lomo central encuadernado */
@@ -657,47 +984,86 @@ html, body {
 }
 
 .left-leaf {
-  border-radius: 6px 0 0 6px;
+  border-radius: 8px 0 0 8px;
   border-right: none;
-  box-shadow: inset -18px 0 25px -8px rgba(34, 3, 10, 0.28);
+  box-shadow: 
+    inset -22px 0 30px -10px rgba(45, 15, 20, 0.32),
+    inset 0 0 15px rgba(0, 0, 0, 0.04);
 }
 
 .right-leaf {
-  border-radius: 0 6px 6px 0;
+  border-radius: 0 8px 8px 0;
   border-left: none;
-  box-shadow: inset 18px 0 25px -8px rgba(34, 3, 10, 0.28);
+  box-shadow: 
+    inset 22px 0 30px -10px rgba(45, 15, 20, 0.32),
+    inset 0 0 15px rgba(0, 0, 0, 0.04);
   transform-origin: left center;
 }
 
 .leaf-paper-surface {
   width: 100%;
   height: 100%;
-  padding: 1.1rem;
-  overflow-y: auto;
-  overflow-x: hidden;
+  padding: clamp(8px, 1.8vh, 18px) clamp(10px, 2vw, 22px);
+  overflow: hidden;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  background-color: #fbf8f2;
   background-image: 
-    radial-gradient(var(--c-parchment-border) 0.65px, transparent 0.65px);
-  background-size: 18px 18px;
+    radial-gradient(rgba(180, 160, 140, 0.18) 0.75px, transparent 0.75px);
+  background-size: 16px 16px;
 }
 
 .page-half-content {
   display: flex;
   flex-direction: column;
   height: 100%;
+  width: 100%;
+  box-sizing: border-box;
   justify-content: space-between;
+  flex: 1;
+  min-height: 0;
 }
 
-/* Marco fotográfico de la página izquierda */
+/* Cinta Washi Tape decorativa (Estilo Scrapbook Paper by Apple) */
+.washi-tape-strip {
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-1.5deg);
+  width: 60px;
+  height: 15px;
+  background: rgba(255, 248, 230, 0.75);
+  border-left: 2px dashed rgba(190, 165, 130, 0.45);
+  border-right: 2px dashed rgba(190, 165, 130, 0.45);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(2px);
+  z-index: 8;
+  pointer-events: none;
+}
+
+/* Marco fotográfico estilo Scrapbook / Polaroid de lujo */
 .archival-photo-mount {
   position: relative;
   background: #ffffff;
-  padding: 6px 6px 12px 6px;
-  border-radius: 2px;
-  border: 1px solid var(--c-parchment-border);
-  box-shadow: 0 3px 12px rgba(34, 20, 19, 0.1);
-  margin: 0 auto;
+  padding: 5px 5px 6px 5px;
+  border-radius: 3px;
+  border: 1px solid rgba(220, 205, 185, 0.7);
+  box-shadow: 
+    0 4px 18px rgba(35, 20, 15, 0.16),
+    0 1px 4px rgba(0, 0, 0, 0.08);
   width: 100%;
-  max-width: 340px;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  transform: rotate(-0.5deg);
+  transition: transform 0.3s ease;
+  box-sizing: border-box;
+}
+
+.archival-photo-mount:hover {
+  transform: rotate(0deg) scale(1.01);
 }
 
 .corner-gold {
@@ -715,23 +1081,30 @@ html, body {
 .spread-media-frame {
   position: relative;
   width: 100%;
-  height: clamp(180px, 34dvh, 320px);
-  background: #0f1610;
+  flex: 1;
+  min-height: 0;
+  background: #111812;
   overflow: hidden;
-  border-radius: 1px;
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .spread-media-frame img {
+  max-width: 100%;
+  max-height: 100%;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   display: block;
   cursor: pointer;
-  transition: transform 0.4s ease;
+  transition: transform 0.3s ease;
+  background: #0d140e;
 }
 
 .spread-media-frame:hover img {
-  transform: scale(1.025);
+  transform: scale(1.02);
 }
 
 .btn-zoom-photo {
@@ -753,9 +1126,11 @@ html, body {
 .btn-zoom-photo:hover { opacity: 1; }
 
 .spread-media-frame video {
+  max-width: 100%;
+  max-height: 100%;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   display: block;
   background: #000;
 }
@@ -764,58 +1139,97 @@ html, body {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  padding-top: 6px;
+  padding-top: 5px;
+  flex-shrink: 0;
   font-family: var(--font-sans);
 }
 
 .photo-caption-title {
-  font-size: 0.82rem;
+  font-size: clamp(0.78rem, 1.1vw, 0.88rem);
   font-weight: 600;
   color: var(--c-wine-800);
-  line-height: 1.25;
+  line-height: 1.2;
 }
 
 .photo-caption-date {
-  font-size: 0.72rem;
+  font-size: clamp(0.68rem, 0.9vw, 0.74rem);
   color: var(--c-text-dark-muted);
+  line-height: 1.2;
 }
 
-/* Carta manuscrita en la página derecha */
+.photo-caption-date.empty-date {
+  display: none;
+}
+
+body.edit-mode-active .photo-caption-date.empty-date {
+  display: inline-flex;
+}
+
+/* Carta manuscrita en la página derecha (Centrada en la hoja para equilibrio visual) */
 .story-letter-box {
   flex: 1;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: stretch;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.journal-entry-box {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: auto 0;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .entry-subheading {
   font-family: var(--font-serif);
-  font-size: clamp(1.2rem, 3.5vw, 1.55rem);
+  font-size: clamp(1.05rem, 1.7vw, 1.3rem);
   font-weight: 600;
   font-style: italic;
   color: var(--c-wine-800);
-  margin-bottom: 0.4rem;
+  margin-bottom: 0.45rem;
+  line-height: 1.25;
+  padding-right: 28px;
 }
 
 .handwriting-ruled-area {
+  flex: 0 1 auto;
+  max-height: 100%;
+  overflow-y: auto;
   background: repeating-linear-gradient(
     transparent,
-    transparent 25px,
-    var(--c-parchment-line) 26px
+    transparent 24px,
+    var(--c-parchment-line) 25px
   );
-  padding: 0.4rem 0.2rem;
-  min-height: 120px;
+  padding: 0.2rem 0;
 }
 
 .journal-handwritten-text {
   font-family: var(--font-hand);
-  font-size: clamp(1.1rem, 3vw, 1.35rem);
+  font-size: clamp(0.95rem, 1.4vw, 1.15rem);
   font-weight: 600;
   color: var(--c-text-dark);
-  line-height: 26px;
+  line-height: 25px;
   outline: none;
   white-space: pre-wrap;
   word-break: break-word;
+  margin: 0;
+}
+
+.parchment-letter-box {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: auto 0;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .page-number-footer {
@@ -831,6 +1245,7 @@ html, body {
 .right-footer { text-align: right; }
 
 .btn-edit-journal {
+  display: none !important;
   float: right;
   background: rgba(255, 255, 255, 0.8);
   border: 1px solid var(--c-parchment-border);
@@ -838,7 +1253,6 @@ html, body {
   width: 24px;
   height: 24px;
   color: var(--c-wine-800);
-  display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
@@ -972,35 +1386,13 @@ html, body {
   display: block;
 }
 
-/* Barra inferior */
+/* Barra inferior: Oculta por completo para que la navegación sea únicamente haciendo clic en las hojas del libro y aprovechar todo el espacio */
 .app-bottombar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 52px;
-  padding: 0 0.85rem;
-  z-index: 45;
-  background: rgba(10, 19, 13, 0.75);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  margin: 0 0.6rem 0.4rem;
+  display: none !important;
 }
 
 .nav-control-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  padding: 0.45rem 0.9rem;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: var(--c-text-primary);
-  font-family: var(--font-sans);
-  font-size: 0.82rem;
-  font-weight: 600;
-  cursor: pointer;
+  display: none !important;
 }
 
 .nav-control-btn:disabled {
@@ -1115,23 +1507,81 @@ html, body {
 
 .hidden { display: none !important; }
 
-/* Responsive para móvil */
-@media (max-width: 767px) {
+/* ==========================================================================
+   ESTILOS DE MODO EDICIÓN EN VIVO
+   ========================================================================== */
+body.edit-mode-active [data-field-key] {
+  outline: 1.5px dashed rgba(201, 154, 76, 0.7);
+  outline-offset: 3px;
+  border-radius: 4px;
+  background-color: rgba(201, 154, 76, 0.08);
+  cursor: text;
+  transition: background-color 0.2s ease, outline-color 0.2s ease;
+  min-width: 24px;
+  display: inline-block;
+}
+
+body.edit-mode-active p[data-field-key] {
+  display: block;
+}
+
+body.edit-mode-active [data-field-key]:hover {
+  outline-color: var(--c-gold-foil);
+  background-color: rgba(201, 154, 76, 0.16);
+}
+
+body.edit-mode-active [data-field-key]:focus {
+  outline: 2px solid var(--c-gold-foil);
+  background-color: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 0 10px rgba(201, 154, 76, 0.3);
+}
+
+/* En horizontal, ocultar automáticamente el aviso de rotar el teléfono */
+@media (orientation: landscape) {
+  #rotatePhoneHint {
+    display: none !important;
+  }
+}
+
+/* ==========================================================================
+   RESPONSIVE PARA MÓVIL EN VERTICAL (PORTRAIT)
+   ========================================================================== */
+@media (max-width: 767px) and (orientation: portrait) {
+  .book-diorama {
+    perspective: 1200px;
+    perspective-origin: center 25%;
+    padding: 0;
+    align-items: center;
+  }
+
   .two-page-book {
-    width: 96vw;
-    height: clamp(380px, 64dvh, 520px);
+    width: min(97vw, 420px);
+    height: clamp(310px, 48vh, 390px);
+    aspect-ratio: auto;
+    transform: rotateX(8deg);
+  }
+
+  .two-page-book.book-is-closed {
+    width: clamp(210px, 58vw, 275px);
+    height: clamp(310px, 48vh, 390px);
+    aspect-ratio: auto;
+    transform: rotateX(8deg);
   }
 
   .leaf-paper-surface {
-    padding: 0.65rem 0.5rem;
+    padding: 0.5rem 0.55rem;
   }
 
   .archival-photo-mount {
-    padding: 4px 4px 8px 4px;
+    padding: 4px 4px 6px 4px;
   }
 
-  .spread-media-frame {
-    height: clamp(150px, 28dvh, 220px);
+  .photo-caption-title {
+    font-size: 0.76rem;
+  }
+
+  .photo-caption-date {
+    font-size: 0.66rem;
   }
 
   .entry-subheading {
@@ -1139,16 +1589,301 @@ html, body {
   }
 
   .journal-handwritten-text {
-    font-size: 0.95rem;
-    line-height: 22px;
+    font-size: 0.88rem;
+    line-height: 20px;
+  }
+
+  .cover-front-face {
+    padding: 1rem 0.75rem;
+  }
+  .cover-crest svg {
+    width: 32px;
+    height: 32px;
+  }
+  .cover-eyebrow-text {
+    font-size: 0.68rem;
+    margin-bottom: 0.3rem;
+  }
+  .cover-main-title {
+    font-size: 1.6rem;
+    margin-bottom: 0.35rem;
+  }
+  .cover-subtitle-text {
+    font-size: 0.85rem;
+    margin-bottom: 0.8rem;
+  }
+  .cover-tap-prompt {
+    font-size: 0.72rem;
+    padding: 0.25rem 0.65rem;
+  }
+}
+
+/* ==========================================================================
+   RESPONSIVE EN MODO HORIZONTAL / PANTALLAS CORTAS (MÓVILES ROTADOS)
+   Aprovecha el 100% del espacio vertical libre (sin barras)
+   El libro mantiene su proporción dorada (1.48:1) sin verse achatado
+   Las imágenes se muestran al 100% completas (object-fit: contain) sin recortarse
+   ========================================================================== */
+@media (orientation: landscape), (max-height: 560px) {
+  .album-stage-overlay {
+    padding: env(safe-area-inset-top, 4px) env(safe-area-inset-right, 10px) env(safe-area-inset-bottom, 4px) env(safe-area-inset-left, 10px);
+  }
+
+  .app-topbar {
+    top: env(safe-area-inset-top, 6px);
+    left: env(safe-area-inset-left, 10px);
+    right: env(safe-area-inset-right, 10px);
+  }
+
+  .app-topbar .icon-action-btn {
+    width: 32px;
+    height: 32px;
+  }
+
+  .app-topbar .icon-action-btn svg {
+    width: 17px;
+    height: 17px;
+  }
+
+  .app-topbar .pagination-indicator {
+    font-size: 0.78rem;
+    padding: 0.22rem 0.7rem;
+  }
+
+  .app-topbar .pill-action-btn {
+    padding: 0.22rem 0.65rem;
+    font-size: 0.76rem;
+  }
+
+  .book-diorama {
+    perspective: 1600px;
+    perspective-origin: center 25%;
+    padding: 0;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .two-page-book {
+    /* Altura que llena elegantemente la pantalla horizontal */
+    height: clamp(310px, calc(100dvh - 16px), 520px);
+    aspect-ratio: 1.48 / 1;
+    max-width: min(95vw, 840px);
+    width: auto;
+    transform: rotateX(8deg);
+  }
+
+  .two-page-book.book-is-closed {
+    height: clamp(310px, calc(100dvh - 16px), 520px);
+    aspect-ratio: 1 / 1.38;
+    max-width: min(85vw, 360px);
+    width: auto;
+    transform: rotateX(8deg);
+  }
+
+  .leaf-paper-surface {
+    padding: 0.45rem 0.65rem 0.35rem;
+  }
+
+  .archival-photo-mount {
+    flex: 1;
+    min-height: 0;
+    padding: 4px 4px 6px 4px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .washi-tape-strip {
+    top: -7px;
+    width: 52px;
+    height: 14px;
+  }
+
+  .spread-media-frame {
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #0f1610;
+  }
+
+  .spread-media-frame img {
+    max-width: 100%;
+    max-height: 100%;
+    width: 100%;
+    height: 100%;
+    object-fit: contain !important;
+    background: #0d140e;
+  }
+
+  .spread-media-frame video {
+    max-width: 100%;
+    max-height: 100%;
+    width: 100%;
+    height: 100%;
+    object-fit: contain !important;
+  }
+
+  .photo-info-bar {
+    padding-top: 4px;
+    gap: 2px;
+    flex-shrink: 0;
+  }
+
+  .photo-caption-title {
+    font-size: 0.82rem;
+    line-height: 1.2;
+  }
+
+  .photo-caption-date {
+    font-size: 0.7rem;
+    line-height: 1.2;
+  }
+
+  .story-letter-box {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .journal-entry-box {
+    flex: 0 1 auto;
+    margin: auto 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .entry-subheading {
+    font-size: 1.02rem;
+    margin-bottom: 0.25rem;
+    line-height: 1.2;
   }
 
   .handwriting-ruled-area {
-    min-height: 90px;
+    flex: 0 1 auto;
+    max-height: 100%;
+    overflow-y: auto;
+    padding: 0.15rem 0;
     background: repeating-linear-gradient(
       transparent,
-      transparent 21px,
-      var(--c-parchment-line) 22px
+      transparent 20px,
+      var(--c-parchment-line) 21px
     );
+  }
+
+  .journal-handwritten-text {
+    font-size: 0.92rem;
+    line-height: 21px;
+    margin: 0;
+  }
+
+  .parchment-letter-box {
+    flex: 0 1 auto;
+    margin: auto 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .page-number-footer {
+    font-size: 0.66rem;
+    padding-top: 2px;
+  }
+
+  .btn-edit-journal {
+    width: 22px;
+    height: 22px;
+    top: -2px;
+    right: 0;
+  }
+
+  .btn-zoom-photo {
+    padding: 2px 4px;
+    font-size: 0.65rem;
+    top: 3px;
+    right: 3px;
+  }
+
+  /* Portada cerrada en horizontal */
+  .cover-front-face {
+    padding: 0.85rem 0.65rem;
+  }
+  .cover-crest svg {
+    width: 32px;
+    height: 32px;
+  }
+  .cover-eyebrow-text {
+    font-size: 0.68rem;
+    margin-bottom: 0.2rem;
+  }
+  .cover-main-title {
+    font-size: 1.45rem;
+    margin-bottom: 0.25rem;
+  }
+  .cover-subtitle-text {
+    font-size: 0.82rem;
+    margin-bottom: 0.6rem;
+  }
+  .cover-tap-prompt {
+    font-size: 0.72rem;
+    padding: 0.22rem 0.6rem;
+  }
+
+  /* Dedicatoria en horizontal */
+  .dedication-left-pane {
+    padding: 0.4rem;
+  }
+  .book-intro-title {
+    font-size: 1.15rem;
+    margin-bottom: 0.2rem;
+  }
+  .book-intro-sub {
+    font-size: 0.82rem;
+    margin-bottom: 0.3rem;
+  }
+  .flourish-crest svg {
+    width: 32px;
+    height: 32px;
+  }
+  .wax-seal-symbol {
+    font-size: 1.3rem;
+    margin-top: 0.25rem;
+  }
+  .dedication-body {
+    font-size: 0.88rem;
+    line-height: 19px;
+  }
+
+  /* Final en horizontal */
+  .final-left-pane {
+    padding: 0.4rem;
+  }
+  .final-book-title {
+    font-size: 1.18rem;
+  }
+  .final-book-sub {
+    font-size: 0.82rem;
+  }
+  .beating-heart-emblem svg {
+    width: 34px;
+    height: 34px;
+  }
+  .final-letter-text {
+    font-size: 0.86rem;
+    line-height: 1.4;
+  }
+  .final-letter-sign {
+    font-size: 1rem;
+    margin-top: 0.3rem;
+  }
+  .btn-celebrate-love {
+    padding: 0.35rem 0.8rem;
+    font-size: 0.74rem;
   }
 }

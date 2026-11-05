@@ -2,8 +2,7 @@
  * =========================================================================
  * 💌 CONFIGURACIÓN DEL ÁLBUM DE NUESTRO ANIVERSARIO (1 AÑO Y 7 MESES) 💌
  * =========================================================================
- * Aquí puedes cambiar los textos, títulos, dedicatoria y el orden de fotos
- * o videos. ¡Cualquier cambio aquí se reflejará directamente en el álbum!
+ * Textos reales y memorias oficiales escritas por Joaquin para Lu.
  */
 
 export const ALBUM_CONFIG = {
@@ -19,7 +18,9 @@ export const ALBUM_CONFIG = {
 Cada risa, cada salida, cada abrazo y cada momento que hemos vivido juntos
 han sido los mejores 19 meses de mi vida.
 
-Este álbum es un pedacito de nosotros, de nuestra historia y de lo mucho que te amo.`,
+Este álbum es un pedacito de nosotros, de nuestra historia y de lo mucho que te amo.
+
+No es todo lo que hemos vivido pero es un pequeña muy pequeña parte de lo que hemos ido viviendo desde los tatuajes que teniamos planeado hacer, desde el primer peluche que te regale, desde esa vez que fuimos a miraflores o cuando fuimos a cerro azul son cositas tan bonitos que sean podido capturar en momentos grabados pero yo creo que mas que fotos o videos lo mas bonito es lo que tenemos en  nuetra cabeza`,
 
   // Mensaje final (última página)
   finalTitle: "¡Feliz 1 Año y 7 Meses, Mi Amor!",
@@ -33,28 +34,25 @@ Te amo con todo mi corazón ❤️`,
 
 /**
  * =========================================================================
- * 📸 PÁGINAS DEL ÁLBUM (FOTOS Y VIDEOS)
+ * 📸 PÁGINAS DEL ÁLBUM (FOTOS Y VIDEOS CON LOS TEXTOS DE JOAQUIN)
  * =========================================================================
- * Puedes reordenar los elementos cortando y pegando el bloque { ... }
- * Para cambiar la descripción, edita el campo `defaultCaption`.
- * Si quieres agregar más, coloca la foto en 'public/photos/' y añade una entrada aquí.
  */
 export const albumPages = [
   {
     id: "page-1",
     type: "photo",
     src: "photos/01-juntos-calle.jpg",
-    title: "Nuestra noche favorita",
-    date: "Caminando juntos",
-    defaultCaption: "Juntos de noche en la calle, compartiendo momentos que nunca voy a olvidar. A tu lado cualquier lugar se vuelve mágico."
+    title: "Nuestra noche juntos",
+    date: "",
+    defaultCaption: "Me acuerdo que este dia fue el dia fue bonito aparte de que nos tomaron un foto muy bonita en donde ambos salimos muy bien fue el dia que senti que compartimos mas que otros dias juntos nos reimos nos jugamos fue todo muy bonito"
   },
   {
     id: "page-2",
     type: "photo",
     src: "photos/02-selfie-corazones.jpg",
-    title: "Esa sonrisa tuya",
-    date: "Lleno de amor",
-    defaultCaption: "Esa carita y esa sonrisa tuya que me enamoran cada día más. Me haces el hombre más afortunado del mundo."
+    title: "Nuestra Foto",
+    date: "",
+    defaultCaption: "Esta foto me acuerdo que fue por que teniamos muchas fotos juntas y dicho y hecho en ninguna foto puedo aparecer bien pero tu como siempre saliendo tan hermosa tan bonita tan graciosa"
   },
   {
     id: "page-3",
@@ -62,39 +60,39 @@ export const albumPages = [
     src: "photos/03-con-los-bebes.jpg",
     title: "Momentos en familia",
     date: "Tardes llenas de ternura",
-    defaultCaption: "Con los más pequeños de la casa. Verte sonreír así me llena el corazón de una manera inexplicable."
+    defaultCaption: "La ves que creaste con IA a nuesros hijitos que al principio no te gustaban pero luego les cambiaste el cabello y te gusto un poco mas no puedo esperar en forma una familia juntos vivir rodeados de amor de travesuras y sobre todo de mucho felicidad"
   },
   {
     id: "page-4",
     type: "photo",
     src: "photos/04-selfie-perritos.jpg",
-    title: "Nuestras locuras",
-    date: "Risas compartidas",
-    defaultCaption: "Haciendo caras graciosas y siendo nosotros mismos. No cambio nuestras risas y complicidad por absolutamente nada."
+    title: "Nuestra Primera Selfie",
+    date: "",
+    defaultCaption: "Esta si fue nuestra primera selfie que nos tomamos fue el dia que me dijiste que no teniamos muchas fotos juntos y desde ese momento nos empezamos a tomar fotos juntos con mas frecuencia aun que sigo saliendo bien mal pero tu saliendo tan bonita y tan graciosa a la ves Te amo"
   },
   {
     id: "page-5",
     type: "photo",
     src: "photos/05-cupcakes.jpg",
-    title: "Detalles dulces",
-    date: "Hecho con amor",
-    defaultCaption: "Un detalle dulce para nosotros, porque cada pequeño recuerdo a tu lado vale oro."
+    title: "Detalles dulces pero amargos",
+    date: "",
+    defaultCaption: "Este fue el dia de mi cumpleaños fue un dia despues si no me equivoco en el cual estabamos con el problema con tus papás que a ambos nos habia afectado mucho y me acuerdo que decias que tu ibas a venir a mi cumpleaños que no te lo ibas a perder y dicho y hecho ahi estabas compartiendo contigo fue como si mi alma volviera a mi cuerpo en ese momento"
   },
   {
     id: "page-6",
     type: "photo",
     src: "photos/06-flor.jpg",
     title: "Una flor para ti",
-    date: "De mi mano a la tuya",
-    defaultCaption: "Una flor para la flor más hermosa de todo mi mundo. Sostener tu mano es mi lugar favorito en la tierra."
+    date: "",
+    defaultCaption: "Las flores yo creo que las flores es algo que a nuestra relacion la caracteriza mucho ya que todo empezo con mediante flores de vez en cuando y mas haya de esos detalles cada flor que pueda existir me va hacer acordar a ti"
   },
   {
     id: "page-7",
     type: "photo",
     src: "photos/07-con-snoopy.png",
     title: "Ternura pura",
-    date: "Abrazando a Snoopy",
-    defaultCaption: "Te ves tan tierna y hermosa abrazando a Snoopy... Cada detalle tuyo me fascina."
+    date: "",
+    defaultCaption: "Te ves tan tierna y hermosa abrazando al Snoppy que te regale a nuestro primer hijo Dante en el cual sales tan tierna tan bonita y tan linda a la vez"
   },
   {
     id: "page-8",
@@ -102,39 +100,39 @@ export const albumPages = [
     src: "photos/08-peluches.jpg",
     title: "Nuestros compañeros",
     date: "Snoopy & Stitch",
-    defaultCaption: "Nuestros peluches favoritos, testigos silenciosos de tanto cariño, risas y momentos inolvidables juntos."
+    defaultCaption: "Esta fue la foto en la que me mostraste en donde habias colocado a Dante ya luego vieron un poco mas de peluches como la jirafa o el osito de bom a bom o mi compañero de mi infancia charizard"
   },
   {
     id: "page-9",
     type: "photo",
     src: "photos/09-en-la-sala.jpg",
-    title: "Tardes de calma",
-    date: "En casa contigo",
-    defaultCaption: "Esas tardes tranquilas en casa, donde no hace falta nada más que estar juntos para sentir que lo tenemos todo."
+    title: "Nuestro Spa",
+    date: "",
+    defaultCaption: "Estos fueron los momentos de nuestra relacion en los que podiamos vivir pegados ya que estabamos bien en ese entonces con tus pps y podiamos estar solos en la sala viendo flashito espero en algun momento poder retomar eso que teniamos aun que no quiere decir que ahora vivimos despegados o separados yo creo que ahora mismo vivimos mas pegados que nunca"
   },
   {
     id: "page-10",
     type: "photo",
     src: "photos/10-tatuaje-L.jpg",
     title: "Siempre conmigo",
-    date: "Para siempre",
-    defaultCaption: "Llevándote en mi piel, en mi mente y en cada latido de mi corazón. Mi 'L' favorita."
+    date: "",
+    defaultCaption: "Aun no hemos llegado a este punto de nuestra historia que es marcarte en mi piel de por vida aun que estabamos a punto se que en algun momento lo vamos a poder hacer aun que tu ya vives tatuada en mi piel y en mi corazon"
   },
   {
     id: "page-11",
     type: "photo",
     src: "photos/11-principito.jpg",
     title: "Nuestra rosa y el zorro",
-    date: "Lo esencial",
-    defaultCaption: "«Eres responsable para siempre de lo que has domesticado. Eres responsable de tu rosa». Tú eres mi rosa única en el universo."
+    date: "",
+    defaultCaption: "Y como no el Principito algo importante de nuestra relacion la cual tambien nos caracteriza mucho siendo el planeta la pucp el lugar donde nos conocimos tu mi rosa y yo el principito algo que no se puede borrar en algun momento lo vamos a tener mas presente"
   },
   {
     id: "page-12",
     type: "photo",
     src: "photos/12-vanellope.jpg",
-    title: "Mi dulce traviesa",
+    title: "Mi niña traviesa",
     date: "Tan única como tú",
-    defaultCaption: "Con la personalidad más linda, divertida y dulce. No hay nadie en este mundo que se compare contigo."
+    defaultCaption: "Con la personalidad más linda, divertida, dulce, extrovertida y alegre del mundo no hay personaje mas similar a ti que la Princesa Penelope tanto de rostro como de personalidad son tan parecidas como te amo mi vida"
   },
   {
     id: "page-13",
@@ -142,22 +140,22 @@ export const albumPages = [
     src: "photos/video-1.mp4",
     title: "Un momento en video",
     date: "Grabado con amor",
-    defaultCaption: "Un instante grabado para recordar cómo se siente estar aquí juntos. ¡Dale play para revivirlo!"
+    defaultCaption: "El video donde te beos lo pies un video bastante bonito ya que estamos compartiendo en cerro azul estamos bien tranquilos echados en la cama y toco a ataque de besitos a los pies que reketo"
   },
   {
     id: "page-14",
     type: "video",
     src: "photos/video-2.mp4",
-    title: "Nuestra vibra",
-    date: "Espontáneo",
-    defaultCaption: "Nuestra vibra juntos, momentos espontáneos que guardo como el tesoro más preciado."
+    title: "Tu vibra",
+    date: "",
+    defaultCaption: "No hay foto mas completa que el sol mostrandoce a otro sol no puedo parar de decir que eres mi sol mi luna mi estrella ya que eres la persona que ilumina tanto mi camino como el camino de las personas que las necesita es como esa vez que estabamos en bajada y te pedi una foto junto al sol por que fue el momento mas bonito de todo"
   },
   {
     id: "page-15",
     type: "video",
     src: "photos/video-3.mp4",
     title: "Risas inolvidables",
-    date: "Inolvidable",
-    defaultCaption: "Nuestras risas y la alegría de estar el uno con el otro. Que nunca se acabe esta magia."
+    date: "",
+    defaultCaption: "El momento que te burlaste de  mi en el que me pusiste hacer ranitas fue tan gracioso y no me importo hacer el tonto solo para escucharte reir fue tan bonito escucharte de esa manera por que parecias una linda niña chiquita burlandose de mi tan bella mi niña"
   }
 ];

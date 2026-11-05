@@ -24,33 +24,52 @@
        ESCENARIO DEL BOSQUE ENCANTADO CON EL ATRIL DE PIEDRA (SHREK FAIRYTALE)
        ========================================================================= -->
   <div class="enchanted-world-viewport" id="enchantedWorld">
-    <!-- Capa de Fondo: Pintura del bosque con el atril de piedra, flores, perrito y pajaritos -->
-    <div class="forest-backdrop" id="forestBackdrop">
-      <img src="./photos/enchanted-forest-pedestal.jpg" alt="Bosque encantado con atril de piedra" class="forest-bg-img" id="forestBgImg">
-      <div class="sunbeam-overlay"></div>
-      <div class="particles-field" id="particlesField"></div>
+    <!-- =========================================================================
+         ESCENARIO DEL BOSQUE ENCANTADO (ENTRADA LIMPIA CON UN SOLO TAP)
+         ========================================================================= -->
+    <div class="forest-journey-stage" id="forestJourneyStage">
+      <!-- Capa de Fondo: Sendero del bosque con transición fluida al atril de piedra -->
+      <div class="forest-world-scenery" id="forestWorldScenery">
+        <img src="./photos/forest-pathway.jpg" alt="Sendero del bosque encantado" class="forest-pathway-img" id="forestPathwayImg">
+        <img src="./photos/fairytale-lectern.jpg" alt="Atril de piedra en el claro" class="forest-clearing-img" id="forestClearingImg">
+        <div class="forest-sunbeams-layer"></div>
+        <div class="particles-field" id="particlesField"></div>
+      </div>
+
+      <!-- Capas de niebla animada para profundidad de videojuego -->
+      <div class="fog-layers" aria-hidden="true">
+        <div class="fog-layer fog-layer-1"></div>
+        <div class="fog-layer fog-layer-2"></div>
+        <div class="fog-layer fog-layer-3"></div>
+      </div>
+
+      <!-- Pajaritos volando libres entre los árboles -->
+      <div class="birds-sky-container" id="birdsContainer" aria-hidden="true"></div>
+
+      <!-- Mariposas revoloteando cerca de las flores -->
+      <div class="butterflies-container" id="butterfliesContainer" aria-hidden="true"></div>
+
+      <!-- Enredaderas colgantes y ramas en primer plano que se abren suavemente al caminar -->
+      <div class="hanging-vines-frame" id="hangingVinesFrame" aria-hidden="true">
+        <div class="hanging-vine curtain-vines-left"></div>
+        <div class="hanging-vine curtain-vines-right"></div>
+      </div>
+
+      <!-- Pantalla inicial limpia: Un solo tap para comenzar a caminar -->
+      <section class="forest-welcome-overlay" id="welcomeScreen">
+        <div class="welcome-story-card">
+          <span class="anniversary-badge" id="welcomeAnniversary">1 Año y 7 Meses</span>
+          <h1 class="story-names-title" id="welcomeTitle">Joaquin &amp; Lu</h1>
+          <p class="story-lead-quote" id="welcomeSubtitle">Un paseo por el bosque encantado de nuestros recuerdos...</p>
+        </div>
+
+        <!-- Indicador minimalista y elegante: Toca la pantalla para caminar -->
+        <div class="tap-to-walk-indicator" id="tapToWalkPrompt">
+          <div class="tap-circle-ripple"></div>
+          <span class="tap-prompt-text">Toca la pantalla para comenzar el paseo 🌿</span>
+        </div>
+      </section>
     </div>
-
-    <!-- PANTALLA INICIAL DE BIENVENIDA (VISTA PANORÁMICA DEL BOSQUE) -->
-    <section class="forest-welcome-overlay" id="welcomeScreen">
-      <div class="welcome-story-card">
-        <span class="anniversary-badge" id="welcomeAnniversary">1 Año y 7 Meses</span>
-        <h1 class="story-names-title" id="welcomeTitle">Joaquin &amp; Lu</h1>
-        <p class="story-lead-quote" id="welcomeSubtitle">En un claro del bosque encantado, descansa el libro de nuestros recuerdos...</p>
-        
-        <button class="btn-approach-pedestal" id="btnOpenAlbum" aria-label="Acercarse al atril de piedra">
-          <span>Acercarse al atril y abrir el libro</span>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="5" y1="12" x2="19" y2="12"></line>
-            <polyline points="12 5 19 12 12 19"></polyline>
-          </svg>
-        </button>
-      </div>
-
-      <div class="forest-hint-tap">
-        <span>Toca para acercar la cámara al libro</span>
-      </div>
-    </section>
 
     <!-- ESCENARIO DEL LIBRO EN PRIMER PLANO (DOS PÁGINAS ABIERTAS) -->
     <main class="album-stage-overlay hidden" id="albumApp">
@@ -106,12 +125,22 @@
         <button class="btn-close-toast" id="btnCloseNotice" aria-label="Cerrar aviso">✕</button>
       </div>
 
+      <!-- Guía elegante para girar el móvil a horizontal (Estilo Paper de Apple) -->
+      <div class="rotate-phone-hint hidden" id="rotatePhoneHint" role="status" aria-live="polite">
+        <div class="rotate-hint-icon">
+          <svg class="phone-rotate-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect width="14" height="20" x="5" y="2" rx="2" ry="2"/>
+            <path d="M12 18h.01"/>
+            <path d="M19 12c1.5 0 2.5 1.5 1.5 3l-2 3.5"/>
+          </svg>
+        </div>
+        <span class="rotate-hint-text">Gira tu celular en horizontal para ver el álbum en grande 📖</span>
+        <button class="btn-dismiss-rotate" id="btnDismissRotate" aria-label="Cerrar aviso">✕</button>
+      </div>
+
       <!-- ESCENARIO DEL LIBRO CON DOS PÁGINAS ABIERTAS (SPREAD) -->
       <div class="book-diorama" id="bookStage">
-        <!-- Soporte / Atril de piedra estilizado bajo el libro -->
-        <div class="stone-pedestal-shelf"></div>
-
-        <div class="two-page-book" id="bookElement">
+        <div class="two-page-book book-is-closed" id="bookElement">
           <!-- Portada 3D que se abre físicamente hacia la izquierda sin desaparecer -->
           <div class="book-cover-leaf" id="bookCoverLeaf">
             <div class="cover-front-face">
