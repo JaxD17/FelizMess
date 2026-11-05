@@ -4,9 +4,9 @@
  * =========================================================================
  */
 import { ALBUM_CONFIG } from './data.js';
-import { buildBookPages, resetBookToCover, toggleOceanSound } from './album.js';
+import { buildBookPages, resetBookToCover, toggleOceanSound, nextPage } from './album.js';
 import { initEditorSystem } from './editor.js';
-import { animateWelcomeIn, animateOpenAlbum, animateBackToWelcome } from './animations.js';
+import { animateWelcomeIn, animateShrekOpening, animateBackToWelcome } from './animations.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   // 1. Inyectar datos dinámicos en la pantalla de bienvenida
@@ -33,17 +33,21 @@ document.addEventListener('DOMContentLoaded', () => {
   // 4. Lanzar animación de entrada en la bienvenida
   animateWelcomeIn();
 
-  // 5. Botón principal: "Abrir Nuestro Álbum"
+  // 5. Botón principal: Apertura cinemática estilo Shrek
   const btnOpenAlbum = document.getElementById('btnOpenAlbum');
   if (btnOpenAlbum) {
     btnOpenAlbum.addEventListener('click', () => {
-      animateOpenAlbum(() => {
-        // Al abrir, iniciamos el sonido relajante de olas si está disponible
-        const soundBtn = document.getElementById('btnSoundToggle');
-        if (soundBtn) {
-          // Activar olas suaves por defecto
-          const isPlaying = toggleOceanSound(true);
-          updateSoundButtonUI(isPlaying);
+      // Iniciar oleaje suave
+      const isPlaying = toggleOceanSound(true);
+      updateSoundButtonUI(isPlaying);
+
+      // Lanzar secuencia cinemática: acercamiento de cámara + apertura de portada
+      animateShrekOpening({
+        onOpenCover: () => {
+          nextPage();
+        },
+        onComplete: () => {
+          console.log('[Álbum] Apertura cinemática completada');
         }
       });
     });
@@ -83,16 +87,13 @@ document.addEventListener('DOMContentLoaded', () => {
   setupSparkleTouch();
 });
 
-/**
- * Crea destellos o pequeños corazones efímeros al tocar o hacer clic
- */
 function setupSparkleTouch() {
   const symbols = ['✨', '💖', '⭐', '🐚', '🌊'];
   let lastSpawn = 0;
 
   function createSparkle(x, y) {
     const now = Date.now();
-    if (now - lastSpawn < 90) return; // Limitar frecuencia para fluidez
+    if (now - lastSpawn < 90) return;
     lastSpawn = now;
 
     const el = document.createElement('span');
@@ -108,7 +109,6 @@ function setupSparkleTouch() {
   }
 
   window.addEventListener('click', (e) => {
-    // Si no es un botón ni elemento interactivo, lanzar destello
     if (!e.target.closest('button') && !e.target.isContentEditable) {
       createSparkle(e.clientX, e.clientY);
     }

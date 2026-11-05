@@ -33,9 +33,6 @@ function getAudioContext() {
   return audioCtx;
 }
 
-/**
- * Sonido sintetizado de pasar página (crujido suave de papel de archivo)
- */
 export function playPageFlipSound() {
   try {
     const ctx = getAudioContext();
@@ -71,9 +68,6 @@ export function playPageFlipSound() {
   }
 }
 
-/**
- * Generador ambiental de oleaje marino (marea crepuscular)
- */
 export function toggleOceanSound(forceState) {
   try {
     const ctx = getAudioContext();
@@ -150,6 +144,7 @@ export function buildBookPages() {
   if (!bookElement) return;
 
   bookElement.innerHTML = '';
+  pagesElements = [];
   const pagesData = [];
 
   // 1. Portada del Libro (Piel Guinda + Grabado Oro)
@@ -202,7 +197,7 @@ export function buildBookPages() {
   // 3. Páginas de fotos y videos
   albumPages.forEach((item, index) => {
     const activeText = getActiveCaption(item.id, item.defaultCaption);
-    const rotation = ((index % 5) - 2) * 0.8; // Rotación sutil y natural
+    const rotation = ((index % 5) - 2) * 0.7;
 
     let mediaHtml = '';
     if (item.type === 'video') {
@@ -288,7 +283,23 @@ export function buildBookPages() {
     pageEl.className = 'book-sheet';
     pageEl.dataset.pageIndex = index;
     pageEl.innerHTML = page.html;
+
+    // Estado visual inicial
     pageEl.style.zIndex = totalPagesCount - index;
+    if (index === 0) {
+      pageEl.style.visibility = 'visible';
+      pageEl.style.opacity = '1';
+      pageEl.style.pointerEvents = 'auto';
+    } else if (index === 1) {
+      // La página siguiente se mantiene lista directamente debajo
+      pageEl.style.visibility = 'visible';
+      pageEl.style.opacity = '1';
+      pageEl.style.pointerEvents = 'none';
+    } else {
+      pageEl.style.visibility = 'hidden';
+      pageEl.style.opacity = '0';
+      pageEl.style.pointerEvents = 'none';
+    }
 
     bookElement.appendChild(pageEl);
     pagesElements.push(pageEl);
@@ -309,7 +320,8 @@ function setupPaginationDots() {
     const dot = document.createElement('div');
     dot.className = `track-dot ${i === 0 ? 'active' : ''}`;
     dot.dataset.targetIndex = Math.round((i / (maxDots - 1)) * (totalPagesCount - 1));
-    dot.addEventListener('click', () => {
+    dot.addEventListener('click', (e) => {
+      e.stopPropagation();
       const target = parseInt(dot.dataset.targetIndex, 10);
       goToPage(target);
     });
@@ -357,6 +369,11 @@ export function prevPage() {
   goToPage(currentPageIndex - 1);
 }
 
+/**
+ * Transición limpia de paso de página 3D:
+ * - La página destino ya está visible y descansando debajo (cero parpadeo ni huecos)
+ * - La página actual rota elegantemente hacia la izquierda
+ */
 export function goToPage(targetIndex) {
   if (isAnimating || targetIndex === currentPageIndex || targetIndex < 0 || targetIndex >= totalPagesCount) return;
 
@@ -369,74 +386,86 @@ export function goToPage(targetIndex) {
   const targetEl = pagesElements[targetIndex];
 
   if (isForward) {
-    for (let i = currentPageIndex; i < targetIndex; i++) {
-      pagesElements[i].classList.add('turned');
-      pagesElements[i].style.zIndex = i + 1;
-    }
+    // Asegurar que la página que se va a revelar esté visible y bien posicionada debajo
+    targetEl.style.visibility = 'visible';
+    targetEl.style.opacity = '1';
+    targetEl.style.zIndex = totalPagesCount - 1;
+    gsap.set(targetEl, { rotateY: 0, x: 0, scale: 1 });
+
+    // La página actual tiene la prioridad visual más alta durante el giro
+    currentEl.style.zIndex = totalPagesCount;
+    currentEl.style.pointerEvents = 'none';
 
     gsap.to(currentEl, {
-      rotateY: -105,
-      scale: 0.96,
+      rotateY: -115,
+      x: -20,
       opacity: 0,
-      duration: 0.65,
+      duration: 0.72,
       ease: 'power2.inOut',
       onComplete: () => {
-        currentEl.style.opacity = 0;
+        currentEl.classList.add('turned');
+        currentEl.style.visibility = 'hidden';
         currentEl.style.pointerEvents = 'none';
-      }
-    });
 
-    targetEl.style.opacity = 0;
-    targetEl.style.zIndex = totalPagesCount;
-    gsap.fromTo(targetEl, 
-      { rotateY: 35, scale: 0.97, opacity: 0 }, 
-      { 
-        rotateY: 0, 
-        scale: 1, 
-        opacity: 1, 
-        duration: 0.7, 
-        ease: 'power2.out',
-        onComplete: () => {
-          isAnimating = false;
-          if (targetIndex === totalPagesCount - 1) {
-            triggerCelebrationConfetti();
-          }
+        targetEl.style.zIndex = totalPagesCount;
+        targetEl.style.pointerEvents = 'auto';
+
+        // Preparar la siguiente página en la cola
+        if (targetIndex + 1 < totalPagesCount) {
+          const nextNextEl = pagesElements[targetIndex + 1];
+          nextNextEl.style.visibility = 'visible';
+          nextNextEl.style.opacity = '1';
+          nextNextEl.style.zIndex = totalPagesCount - 2;
+          gsap.set(nextNextEl, { rotateY: 0, x: 0, scale: 1 });
+        }
+
+        isAnimating = false;
+        if (targetIndex === totalPagesCount - 1) {
+          triggerCelebrationConfetti();
         }
       }
-    );
+    });
   } else {
-    for (let i = targetIndex + 1; i <= currentPageIndex; i++) {
-      pagesElements[i].classList.remove('turned');
-      pagesElements[i].style.zIndex = totalPagesCount - i;
-    }
-
-    targetEl.style.opacity = 0;
+    // Retrocediendo
+    targetEl.style.visibility = 'visible';
+    targetEl.style.opacity = '0';
     targetEl.style.zIndex = totalPagesCount;
+    targetEl.classList.remove('turned');
+
     gsap.fromTo(targetEl, 
-      { rotateY: -60, scale: 0.96, opacity: 0 }, 
+      { rotateY: -115, x: -20, opacity: 0 }, 
       { 
         rotateY: 0, 
-        scale: 1, 
+        x: 0, 
         opacity: 1, 
-        duration: 0.7, 
-        ease: 'power2.out',
+        duration: 0.72, 
+        ease: 'power2.inOut',
         onComplete: () => {
+          targetEl.style.pointerEvents = 'auto';
+          currentEl.style.pointerEvents = 'none';
+
+          // Actualizar z-indexes
+          pagesElements.forEach((el, idx) => {
+            if (idx < targetIndex) {
+              el.classList.add('turned');
+              el.style.visibility = 'hidden';
+            } else if (idx === targetIndex) {
+              el.style.zIndex = totalPagesCount;
+              el.style.visibility = 'visible';
+              el.style.opacity = '1';
+            } else if (idx === targetIndex + 1) {
+              el.style.zIndex = totalPagesCount - 1;
+              el.style.visibility = 'visible';
+              el.style.opacity = '1';
+            } else {
+              el.style.visibility = 'hidden';
+            }
+          });
+
           isAnimating = false;
         }
       }
     );
-
-    gsap.to(currentEl, {
-      rotateY: 35,
-      scale: 0.97,
-      opacity: 0,
-      duration: 0.6,
-      ease: 'power2.inOut',
-      onComplete: () => {
-        currentEl.style.opacity = 0;
-        currentEl.style.pointerEvents = 'none';
-      }
-    });
   }
 
   currentPageIndex = targetIndex;
@@ -448,8 +477,8 @@ function setupPageEvents() {
   const prevBtn = document.getElementById('btnPrevPage');
   const nextBtn = document.getElementById('btnNextPage');
 
-  if (prevBtn) prevBtn.addEventListener('click', prevPage);
-  if (nextBtn) nextBtn.addEventListener('click', nextPage);
+  if (prevBtn) prevBtn.addEventListener('click', (e) => { e.stopPropagation(); prevPage(); });
+  if (nextBtn) nextBtn.addEventListener('click', (e) => { e.stopPropagation(); nextPage(); });
 
   document.addEventListener('click', (e) => {
     if (e.target && e.target.closest('#btnCelebratePage')) {
@@ -487,7 +516,7 @@ function setupPageEvents() {
       const deltaX = e.changedTouches[0].clientX - startX;
       const deltaY = e.changedTouches[0].clientY - startY;
 
-      if (Math.abs(deltaX) > 42 && Math.abs(deltaX) > Math.abs(deltaY) * 1.3) {
+      if (Math.abs(deltaX) > 38 && Math.abs(deltaX) > Math.abs(deltaY) * 1.2) {
         if (deltaX < 0) {
           nextPage();
         } else {
@@ -496,25 +525,26 @@ function setupPageEvents() {
       }
     }, { passive: true });
 
+    // Clic en la página para pasar (solicitud explícita del usuario)
     bookElement.addEventListener('click', (e) => {
+      // Ignorar si se pulsa en botones interactivos, video o edición
       if (e.target.closest('.btn-edit-journal') || 
           e.target.closest('video') || 
           e.target.isContentEditable ||
-          e.target.closest('.btn-celebrate-love')) {
-        return;
-      }
-
-      if (currentPageIndex === 0) {
-        nextPage();
+          e.target.closest('.btn-celebrate-love') ||
+          e.target.closest('button')) {
         return;
       }
 
       const rect = bookElement.getBoundingClientRect();
       const clickX = e.clientX - rect.left;
-      if (clickX > rect.width * 0.65) {
-        nextPage();
-      } else if (clickX < rect.width * 0.35) {
+
+      // Si hace clic en el margen izquierdo (primer 22%), vuelve atrás
+      if (clickX < rect.width * 0.22 && currentPageIndex > 0) {
         prevPage();
+      } else {
+        // En todo el resto de la página (78%), pasa a la siguiente
+        nextPage();
       }
     });
   }
@@ -524,10 +554,11 @@ export function resetBookToCover() {
   pauseAllVideos();
   pagesElements.forEach((el, index) => {
     el.classList.remove('turned');
-    el.style.opacity = index === 0 ? 1 : 0;
+    el.style.opacity = index === 0 ? '1' : (index === 1 ? '1' : '0');
+    el.style.visibility = (index === 0 || index === 1) ? 'visible' : 'hidden';
     el.style.pointerEvents = index === 0 ? 'auto' : 'none';
     el.style.zIndex = totalPagesCount - index;
-    gsap.set(el, { rotateY: 0, scale: 1 });
+    gsap.set(el, { rotateY: 0, x: 0, scale: 1 });
   });
   currentPageIndex = 0;
   updatePaginationUI();

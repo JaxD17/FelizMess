@@ -1,6 +1,7 @@
 /**
  * =========================================================================
  * MÓDULO DE ANIMACIONES CON GSAP Y CANVAS-CONFETTI
+ * Incluye la Apertura Cinemática estilo Cuento de Hadas (Shrek Opening)
  * =========================================================================
  */
 import gsap from 'gsap';
@@ -30,38 +31,91 @@ export function animateWelcomeIn() {
   );
 }
 
-export function animateOpenAlbum(onComplete) {
+/**
+ * Apertura estilo Shrek:
+ * 1. Desvanece la pantalla de inicio.
+ * 2. La cámara vuela desde lejos hacia el libro con perspectiva 3D profunda.
+ * 3. El libro se acerca al primer plano con presencia imponente.
+ * 4. La portada se abre majestuosamente revelando la dedicatoria.
+ */
+export function animateShrekOpening({ onOpenCover, onComplete } = {}) {
   const welcomeScreen = document.getElementById('welcomeScreen');
   const albumApp = document.getElementById('albumApp');
+  const bookElement = document.getElementById('bookElement');
+  const topbar = document.querySelector('.app-topbar');
+  const bottombar = document.querySelector('.app-bottombar');
 
-  const tl = gsap.timeline({
-    onComplete: () => {
-      welcomeScreen.classList.add('fade-out');
-      if (typeof onComplete === 'function') onComplete();
-    }
+  // Destellos mágicos dorados al comenzar el zoom
+  confetti({
+    particleCount: 35,
+    spread: 70,
+    origin: { y: 0.5 },
+    colors: ['#c99a4c', '#f5ede1', '#721329']
   });
 
-  tl.to('.welcome-inner', {
-    scale: 0.96,
-    opacity: 0,
-    y: -20,
-    duration: 0.55,
-    ease: 'power2.in'
-  })
-  .to('.sea-waves-footer', {
-    y: 60,
+  const masterTL = gsap.timeline();
+
+  // Paso 1: Salida suave de la pantalla de bienvenida
+  masterTL.to('.welcome-inner', {
+    scale: 0.92,
     opacity: 0,
     duration: 0.45,
     ease: 'power2.in'
-  }, '-=0.35');
-
-  if (albumApp) {
+  })
+  .to('.sea-waves-footer', {
+    y: 80,
+    opacity: 0,
+    duration: 0.4,
+    ease: 'power2.in'
+  }, '-=0.3')
+  .add(() => {
+    welcomeScreen.classList.add('fade-out');
     albumApp.classList.remove('hidden');
-    gsap.fromTo(albumApp, 
-      { opacity: 0, scale: 0.98 }, 
-      { opacity: 1, scale: 1, duration: 0.75, ease: 'power2.out', delay: 0.25 }
-    );
-  }
+
+    // Ocultar controles temporalmente para que solo se vea el libro en la escena
+    if (topbar) gsap.set(topbar, { opacity: 0, y: -20 });
+    if (bottombar) gsap.set(bottombar, { opacity: 0, y: 20 });
+
+    // Preparar el libro en la distancia (cámara lejana estilo Shrek)
+    gsap.set(bookElement, {
+      scale: 0.22,
+      opacity: 0,
+      rotateX: 20,
+      rotateY: -12,
+      y: 90,
+      filter: 'blur(6px)'
+    });
+  });
+
+  // Paso 2: Zoom cinemático hacia el libro (cámara acercándose a la portada)
+  masterTL.to(bookElement, {
+    scale: 1,
+    opacity: 1,
+    rotateX: 0,
+    rotateY: 0,
+    y: 0,
+    filter: 'blur(0px)',
+    duration: 1.4,
+    ease: 'power3.inOut'
+  })
+  // Breve pausa dramática contemplando la portada (0.35s)
+  .to({}, { duration: 0.35 })
+  // Paso 3: Abrir la portada automáticamente
+  .add(() => {
+    if (typeof onOpenCover === 'function') {
+      onOpenCover();
+    }
+  })
+  // Paso 4: Aparecen suavemente los controles de navegación
+  .to([topbar, bottombar], {
+    opacity: 1,
+    y: 0,
+    duration: 0.6,
+    ease: 'power2.out',
+    onComplete: () => {
+      if (typeof onComplete === 'function') onComplete();
+    }
+  }, '+=0.4');
 }
 
 export function animateBackToWelcome() {
@@ -98,7 +152,6 @@ export function triggerCelebrationConfetti() {
     });
   }
 
-  // Confeti refinado con colores oro, borgoña y arena
   fire(0.3, {
     spread: 35,
     startVelocity: 48,
