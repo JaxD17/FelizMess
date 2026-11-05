@@ -1,7 +1,7 @@
 /**
  * =========================================================================
  * MÓDULO DE ANIMACIONES CON GSAP Y CANVAS-CONFETTI
- * Incluye la Apertura Cinemática estilo Cuento de Hadas (Shrek Opening)
+ * Secuencia Cinemática del Bosque Encantado, Atril de Piedra y Zoom
  * =========================================================================
  */
 import gsap from 'gsap';
@@ -10,103 +10,102 @@ import confetti from 'canvas-confetti';
 export function animateWelcomeIn() {
   const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
 
-  tl.fromTo('.anniversary-label', 
+  tl.fromTo('.anniversary-badge', 
     { opacity: 0, y: -20, letterSpacing: '4px' }, 
-    { opacity: 1, y: 0, letterSpacing: '2.5px', duration: 1.1, delay: 0.15 }
+    { opacity: 1, y: 0, letterSpacing: '2.5px', duration: 1.1, delay: 0.2 }
   )
-  .fromTo('.welcome-names', 
+  .fromTo('.story-names-title', 
     { opacity: 0, y: 25, scale: 0.95 }, 
     { opacity: 1, y: 0, scale: 1, duration: 1.2, ease: 'power2.out' }, 
     '-=0.7'
   )
-  .fromTo('.welcome-lead', 
+  .fromTo('.story-lead-quote', 
     { opacity: 0, y: 15 }, 
     { opacity: 1, y: 0, duration: 0.9 }, 
     '-=0.7'
   )
-  .fromTo('.btn-primary', 
+  .fromTo('.btn-approach-pedestal', 
     { opacity: 0, y: 20 }, 
     { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' }, 
     '-=0.5'
   );
+
+  // Animación suave de partículas mágicas en el bosque
+  createFloatingForestSpores();
 }
 
 /**
- * Apertura estilo Shrek:
- * 1. Desvanece la pantalla de inicio.
- * 2. La cámara vuela desde lejos hacia el libro con perspectiva 3D profunda.
- * 3. El libro se acerca al primer plano con presencia imponente.
- * 4. La portada se abre majestuosamente revelando la dedicatoria.
+ * Secuencia cinemática de acercamiento hacia el atril de piedra y apertura física del libro
  */
-export function animateShrekOpening({ onOpenCover, onComplete } = {}) {
+export function animateForestToPedestalZoom({ onOpenCover, onComplete } = {}) {
   const welcomeScreen = document.getElementById('welcomeScreen');
   const albumApp = document.getElementById('albumApp');
-  const bookElement = document.getElementById('bookElement');
+  const forestBgImg = document.getElementById('forestBgImg');
+  const bookStage = document.getElementById('bookStage');
   const topbar = document.querySelector('.app-topbar');
   const bottombar = document.querySelector('.app-bottombar');
 
-  // Destellos mágicos dorados al comenzar el zoom
+  // Destellos suaves de magia en el bosque
   confetti({
-    particleCount: 35,
-    spread: 70,
-    origin: { y: 0.5 },
-    colors: ['#c99a4c', '#f5ede1', '#721329']
+    particleCount: 30,
+    spread: 60,
+    origin: { y: 0.55 },
+    colors: ['#f2ba49', '#80cbc4', '#df9e26', '#ffffff']
   });
 
   const masterTL = gsap.timeline();
 
-  // Paso 1: Salida suave de la pantalla de bienvenida
-  masterTL.to('.welcome-inner', {
-    scale: 0.92,
+  // Paso 1: Salida del texto inicial
+  masterTL.to('.welcome-story-card', {
+    scale: 0.9,
     opacity: 0,
-    duration: 0.45,
+    y: -25,
+    duration: 0.5,
     ease: 'power2.in'
   })
-  .to('.sea-waves-footer', {
-    y: 80,
+  .to('.forest-hint-tap', {
     opacity: 0,
-    duration: 0.4,
-    ease: 'power2.in'
+    duration: 0.3
   }, '-=0.3')
   .add(() => {
     welcomeScreen.classList.add('fade-out');
     albumApp.classList.remove('hidden');
 
-    // Ocultar controles temporalmente para que solo se vea el libro en la escena
     if (topbar) gsap.set(topbar, { opacity: 0, y: -20 });
     if (bottombar) gsap.set(bottombar, { opacity: 0, y: 20 });
 
-    // Preparar el libro en la distancia (cámara lejana estilo Shrek)
-    gsap.set(bookElement, {
-      scale: 0.22,
-      opacity: 0,
-      rotateX: 20,
-      rotateY: -12,
-      y: 90,
-      filter: 'blur(6px)'
+    // El libro y el atril inician en la distancia
+    gsap.set(bookStage, {
+      scale: 0.35,
+      y: 60,
+      opacity: 0
     });
   });
 
-  // Paso 2: Zoom cinemático hacia el libro (cámara acercándose a la portada)
-  masterTL.to(bookElement, {
-    scale: 1,
-    opacity: 1,
-    rotateX: 0,
-    rotateY: 0,
-    y: 0,
-    filter: 'blur(0px)',
-    duration: 1.4,
+  // Paso 2: Zoom de cámara cinematográfico (el fondo del bosque se acerca y gana desenfoque de profundidad)
+  masterTL.to(forestBgImg, {
+    scale: 1.55,
+    y: '-8%',
+    filter: 'blur(3px) brightness(0.65)',
+    duration: 1.6,
     ease: 'power3.inOut'
-  })
-  // Breve pausa dramática contemplando la portada (0.35s)
-  .to({}, { duration: 0.35 })
-  // Paso 3: Abrir la portada automáticamente
+  }, 'cameraZoom')
+  .to(bookStage, {
+    scale: 1,
+    y: 0,
+    opacity: 1,
+    duration: 1.6,
+    ease: 'power3.inOut'
+  }, 'cameraZoom')
+  // Pausa contemplativa frente al atril de piedra con el libro cerrado
+  .to({}, { duration: 0.4 })
+  // Paso 3: La portada se abre físicamente en 3D
   .add(() => {
     if (typeof onOpenCover === 'function') {
       onOpenCover();
     }
   })
-  // Paso 4: Aparecen suavemente los controles de navegación
+  // Paso 4: Aparecen los controles de navegación
   .to([topbar, bottombar], {
     opacity: 1,
     y: 0,
@@ -115,30 +114,31 @@ export function animateShrekOpening({ onOpenCover, onComplete } = {}) {
     onComplete: () => {
       if (typeof onComplete === 'function') onComplete();
     }
-  }, '+=0.4');
+  }, '+=0.6');
 }
 
-export function animateBackToWelcome() {
+export function animateBackToForest() {
   const welcomeScreen = document.getElementById('welcomeScreen');
   const albumApp = document.getElementById('albumApp');
+  const forestBgImg = document.getElementById('forestBgImg');
 
   if (albumApp) {
     gsap.to(albumApp, {
       opacity: 0,
-      scale: 0.98,
-      duration: 0.35,
+      duration: 0.4,
       onComplete: () => {
         albumApp.classList.add('hidden');
         welcomeScreen.classList.remove('fade-out');
-        gsap.to('.welcome-inner', { scale: 1, opacity: 1, y: 0, duration: 0.6 });
-        gsap.to('.sea-waves-footer', { y: 0, opacity: 1, duration: 0.6 });
+        gsap.to('.welcome-story-card', { scale: 1, opacity: 1, y: 0, duration: 0.6 });
+        gsap.to('.forest-hint-tap', { opacity: 1, duration: 0.6 });
+        gsap.to(forestBgImg, { scale: 1, y: 0, filter: 'blur(0px) brightness(1)', duration: 0.8 });
       }
     });
   }
 }
 
 export function triggerCelebrationConfetti() {
-  const count = 90;
+  const count = 100;
   const defaults = {
     origin: { y: 0.75 },
     zIndex: 999
@@ -171,4 +171,20 @@ export function triggerCelebrationConfetti() {
     startVelocity: 24,
     colors: ['#faf5eb', '#c99a4c']
   });
+}
+
+function createFloatingForestSpores() {
+  const container = document.getElementById('particlesField');
+  if (!container) return;
+
+  container.innerHTML = '';
+  for (let i = 0; i < 18; i++) {
+    const p = document.createElement('div');
+    p.className = 'forest-spore';
+    p.style.left = `${Math.random() * 100}%`;
+    p.style.top = `${Math.random() * 100}%`;
+    p.style.animationDuration = `${6 + Math.random() * 8}s`;
+    p.style.animationDelay = `${Math.random() * 4}s`;
+    container.appendChild(p);
+  }
 }

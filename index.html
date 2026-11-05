@@ -1,17 +1,18 @@
 <!DOCTYPE html>
-<html lang="es" data-theme="night-ocean">
+<html lang="es" data-theme="fairytale-forest">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <meta name="theme-color" content="#0a1122">
+  <meta name="theme-color" content="#121e16">
   <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="description" content="Álbum de fotos de aniversario — Joaquin & Lu, 1 año y 7 meses.">
+  <meta name="description" content="Álbum de fotos de aniversario en el bosque encantado — Joaquin & Lu, 1 año y 7 meses.">
   <title>Joaquin & Lu — 1 Año y 7 Meses</title>
   
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23c99a4c%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z%22/></svg>">
 
-  <!-- Tipografía editorial de alto nivel: Cormorant Garamond + Playfair Display + Caveat + Plus Jakarta Sans -->
+  <!-- Tipografía editorial de alto nivel: Cormorant Garamond + Caveat + Plus Jakarta Sans -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -19,132 +20,184 @@
   <link rel="stylesheet" href="./src/style.css">
 </head>
 <body>
-  <!-- Fondo con cielo crepuscular y olas marinas fluidas -->
-  <div class="ambient-backdrop" aria-hidden="true">
-    <div class="ambient-stars"></div>
-    <div class="ambient-ocean-haze"></div>
-  </div>
-
   <!-- =========================================================================
-       PANTALLA DE BIENVENIDA (PORTAL EDITORIAL)
+       ESCENARIO DEL BOSQUE ENCANTADO CON EL ATRIL DE PIEDRA (SHREK FAIRYTALE)
        ========================================================================= -->
-  <section class="welcome-screen" id="welcomeScreen">
-    <div class="welcome-inner">
-      <div class="welcome-header">
-        <span class="anniversary-label" id="welcomeAnniversary">1 Año y 7 Meses</span>
-        <h1 class="welcome-names" id="welcomeTitle">Joaquin &amp; Lu</h1>
-        <p class="welcome-lead" id="welcomeSubtitle">Nuestra historia a la orilla del mar</p>
-      </div>
+  <div class="enchanted-world-viewport" id="enchantedWorld">
+    <!-- Capa de Fondo: Pintura del bosque con el atril de piedra, flores, perrito y pajaritos -->
+    <div class="forest-backdrop" id="forestBackdrop">
+      <img src="./photos/enchanted-forest-pedestal.jpg" alt="Bosque encantado con atril de piedra" class="forest-bg-img" id="forestBgImg">
+      <div class="sunbeam-overlay"></div>
+      <div class="particles-field" id="particlesField"></div>
+    </div>
 
-      <div class="welcome-cta-wrap">
-        <button class="btn-primary" id="btnOpenAlbum" aria-label="Abrir el álbum de fotos">
-          <span class="btn-text" id="btnOpenLabel">Abrir el álbum</span>
-          <svg class="btn-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <!-- PANTALLA INICIAL DE BIENVENIDA (VISTA PANORÁMICA DEL BOSQUE) -->
+    <section class="forest-welcome-overlay" id="welcomeScreen">
+      <div class="welcome-story-card">
+        <span class="anniversary-badge" id="welcomeAnniversary">1 Año y 7 Meses</span>
+        <h1 class="story-names-title" id="welcomeTitle">Joaquin &amp; Lu</h1>
+        <p class="story-lead-quote" id="welcomeSubtitle">En un claro del bosque encantado, descansa el libro de nuestros recuerdos...</p>
+        
+        <button class="btn-approach-pedestal" id="btnOpenAlbum" aria-label="Acercarse al atril de piedra">
+          <span>Acercarse al atril y abrir el libro</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <line x1="5" y1="12" x2="19" y2="12"></line>
             <polyline points="12 5 19 12 12 19"></polyline>
           </svg>
         </button>
       </div>
-    </div>
 
-    <!-- Olas marinas en la base con curvas sutiles -->
-    <div class="sea-waves-footer" aria-hidden="true">
-      <svg class="sea-waves-svg" viewBox="0 24 150 28" preserveAspectRatio="none">
-        <defs>
-          <path id="gentle-wave-path" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z" />
-        </defs>
-        <g class="wave-layers">
-          <use href="#gentle-wave-path" x="48" y="0" class="wave-l1" />
-          <use href="#gentle-wave-path" x="48" y="3" class="wave-l2" />
-          <use href="#gentle-wave-path" x="48" y="5" class="wave-l3" />
-          <use href="#gentle-wave-path" x="48" y="7" class="wave-l4" />
-        </g>
-      </svg>
-    </div>
-  </section>
-
-  <!-- =========================================================================
-       APLICACIÓN DEL ÁLBUM
-       ========================================================================= -->
-  <main class="album-app hidden" id="albumApp">
-    <!-- Barra superior de navegación y controles con iconografía SVG limpia -->
-    <header class="app-topbar">
-      <button class="icon-action-btn" id="btnHome" title="Volver al inicio" aria-label="Volver al inicio">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-          <polyline points="9 22 9 12 15 12 15 22"></polyline>
-        </svg>
-      </button>
-
-      <div class="pagination-indicator" id="pageCounterBadge" aria-live="polite">
-        <span class="page-current" id="currentPageNum">01</span>
-        <span class="page-divider">/</span>
-        <span class="page-total" id="totalPagesNum">18</span>
+      <div class="forest-hint-tap">
+        <span>Toca para acercar la cámara al libro</span>
       </div>
+    </section>
 
-      <div class="topbar-actions">
-        <!-- Sonido de olas marinas -->
-        <button class="icon-action-btn" id="btnSoundToggle" title="Sonido ambiente de olas" aria-label="Alternar sonido ambiental">
-          <svg class="sound-off-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="1" y1="1" x2="23" y2="23"></line>
-            <path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"></path>
-            <path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2a7 7 0 0 1-.11 1.23"></path>
-            <line x1="12" y1="19" x2="12" y2="23"></line>
-            <line x1="8" y1="23" x2="16" y2="23"></line>
-          </svg>
-          <svg class="sound-on-icon hidden" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
-            <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
-            <line x1="12" y1="19" x2="12" y2="23"></line>
-            <line x1="8" y1="23" x2="16" y2="23"></line>
+    <!-- ESCENARIO DEL LIBRO EN PRIMER PLANO (DOS PÁGINAS ABIERTAS) -->
+    <main class="album-stage-overlay hidden" id="albumApp">
+      <!-- Barra superior de navegación y controles con iconografía SVG limpia -->
+      <header class="app-topbar">
+        <button class="icon-action-btn" id="btnHome" title="Volver al claro del bosque" aria-label="Volver al bosque">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
           </svg>
         </button>
 
-        <!-- Botón de edición de textos -->
-        <button class="pill-action-btn" id="btnEditToggle" title="Modo edición: personaliza tus palabras" aria-label="Editar textos">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"></path>
-            <path d="m15 5 4 4"></path>
+        <div class="pagination-indicator" id="pageCounterBadge" aria-live="polite">
+          <span class="page-current" id="currentPageNum">01</span>
+          <span class="page-divider">/</span>
+          <span class="page-total" id="totalPagesNum">17</span>
+        </div>
+
+        <div class="topbar-actions">
+          <!-- Sonido ambiental de bosque, pajaritos y olas -->
+          <button class="icon-action-btn" id="btnSoundToggle" title="Sonido ambiente de la naturaleza" aria-label="Alternar sonido ambiental">
+            <svg class="sound-off-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="1" y1="1" x2="23" y2="23"></line>
+              <path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"></path>
+              <path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2a7 7 0 0 1-.11 1.23"></path>
+              <line x1="12" y1="19" x2="12" y2="23"></line>
+              <line x1="8" y1="23" x2="16" y2="23"></line>
+            </svg>
+            <svg class="sound-on-icon hidden" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
+              <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+              <line x1="12" y1="19" x2="12" y2="23"></line>
+              <line x1="8" y1="23" x2="16" y2="23"></line>
+            </svg>
+          </button>
+
+          <!-- Botón de edición de textos -->
+          <button class="pill-action-btn" id="btnEditToggle" title="Modo edición: personaliza tus palabras" aria-label="Editar textos">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"></path>
+              <path d="m15 5 4 4"></path>
+            </svg>
+            <span>Editar</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Banner de aviso al activar modo edición -->
+      <div class="edit-toast hidden" id="editNotice" role="status">
+        <div class="edit-toast-text">
+          <strong>Modo Edición activo:</strong> Pulsa sobre cualquier texto para escribir tus palabras. Se guardan automáticamente.
+        </div>
+        <button class="btn-close-toast" id="btnCloseNotice" aria-label="Cerrar aviso">✕</button>
+      </div>
+
+      <!-- ESCENARIO DEL LIBRO CON DOS PÁGINAS ABIERTAS (SPREAD) -->
+      <div class="book-diorama" id="bookStage">
+        <!-- Soporte / Atril de piedra estilizado bajo el libro -->
+        <div class="stone-pedestal-shelf"></div>
+
+        <div class="two-page-book" id="bookElement">
+          <!-- Portada 3D que se abre físicamente hacia la izquierda sin desaparecer -->
+          <div class="book-cover-leaf" id="bookCoverLeaf">
+            <div class="cover-front-face">
+              <div class="cover-frame-border"></div>
+              <div class="cover-crest">
+                <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 2l2.4 7.4h7.6l-6.2 4.5 2.4 7.4-6.2-4.5-6.2 4.5 2.4-7.4-6.2-4.5h7.6z"/>
+                </svg>
+              </div>
+              <div class="cover-eyebrow-text">1 Año y 7 Meses</div>
+              <h2 class="cover-main-title">Joaquin &amp; Lu</h2>
+              <div class="cover-divider-line"></div>
+              <p class="cover-subtitle-text">Memorias de Nuestro Amor</p>
+              <div class="cover-tap-prompt">Toca para abrir 📖</div>
+            </div>
+            <div class="cover-back-face">
+              <!-- Reverso de la portada cuando está abierta a la izquierda -->
+              <div class="cover-inside-lining">
+                <div class="lining-seal">💌</div>
+                <div class="lining-title">Nuestra Historia</div>
+                <div class="lining-sub">Desde el primer día hasta la eternidad</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Lomo central con sombra y costura -->
+          <div class="book-central-spine"></div>
+
+          <!-- Contenedores para las dos páginas abiertas desplegadas -->
+          <div class="spread-container" id="spreadContainer">
+            <!-- Las páginas abiertas izquierda y derecha se renderizan dinámicamente -->
+          </div>
+        </div>
+
+        <!-- MANO ANIMADA QUE PASA LA PÁGINA AL HACER CLIC -->
+        <div class="page-turning-hand hidden" id="turningHand" aria-hidden="true">
+          <svg class="hand-svg" viewBox="0 0 160 220" width="120" height="170">
+            <defs>
+              <filter id="handShadow" x="-30%" y="-20%" width="160%" height="150%">
+                <feDropShadow dx="-4" dy="8" stdDeviation="6" flood-color="rgba(10, 20, 15, 0.45)"/>
+              </filter>
+            </defs>
+            <!-- Brazo y muñeca -->
+            <path d="M85,220 C92,175 96,135 92,105 C88,80 78,60 70,46 C64,36 56,28 48,25 C42,22 35,24 33,30 C31,36 35,46 42,56 L52,72" fill="#e8c4a2" filter="url(#handShadow)"/>
+            <!-- Dedo anular y meñique curvados -->
+            <path d="M48,25 C44,18 36,15 30,17 C25,19 23,25 25,32 C29,42 39,58 48,72" fill="#dfb996"/>
+            <!-- Dedo índice pasando la hoja -->
+            <path d="M38,20 C32,14 24,14 18,19 C14,23 15,31 19,38 C25,50 35,66 44,80" fill="#e8c4a2"/>
+            <!-- Dedo pulgar sujetando el papel -->
+            <path d="M68,68 C78,70 92,75 98,84 C104,92 100,102 92,106 C84,108 72,96 65,85 Z" fill="#e2bc99"/>
+            <!-- Uñas sutiles -->
+            <ellipse cx="29" cy="20" rx="3" ry="4.5" fill="#f4dcd0" opacity="0.75" transform="rotate(-15, 29, 20)"/>
+            <ellipse cx="19" cy="22" rx="2.5" ry="4" fill="#f4dcd0" opacity="0.75" transform="rotate(-20, 19, 22)"/>
           </svg>
-          <span>Editar</span>
+        </div>
+      </div>
+
+      <!-- Barra inferior con controles y navegación táctil -->
+      <footer class="app-bottombar">
+        <button class="nav-control-btn prev-btn" id="btnPrevPage" aria-label="Página anterior">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+          <span>Anterior</span>
         </button>
-      </div>
-    </header>
 
-    <!-- Banner sutil de modo edición -->
-    <div class="edit-toast hidden" id="editNotice" role="status">
-      <div class="edit-toast-text">
-        <strong>Modo Edición activo:</strong> Pulsa sobre cualquier texto para escribir tus palabras. Se guardan automáticamente.
-      </div>
-      <button class="btn-close-toast" id="btnCloseNotice" aria-label="Cerrar aviso">✕</button>
+        <div class="pagination-track" id="dotsPagination" aria-hidden="true"></div>
+
+        <button class="nav-control-btn next-btn" id="btnNextPage" aria-label="Página siguiente">
+          <span>Siguiente</span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </button>
+      </footer>
+    </main>
+  </div>
+
+  <!-- Modal para expandir fotografías a pantalla completa en móvil -->
+  <dialog class="lightbox-dialog" id="lightboxModal">
+    <div class="lightbox-wrapper">
+      <button class="btn-close-lightbox" id="btnCloseLightbox" aria-label="Cerrar foto">✕</button>
+      <img src="" alt="" class="lightbox-img" id="lightboxImg">
+      <p class="lightbox-caption" id="lightboxCaption"></p>
     </div>
-
-    <!-- Escenario 3D del libro encuadernado -->
-    <div class="book-viewport" id="bookStage">
-      <div class="book-container" id="bookElement">
-        <!-- Páginas generadas dinámicamente -->
-      </div>
-    </div>
-
-    <!-- Barra inferior de navegación táctil -->
-    <footer class="app-bottombar">
-      <button class="nav-control-btn prev-btn" id="btnPrevPage" aria-label="Página anterior">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="15 18 9 12 15 6"></polyline>
-        </svg>
-        <span>Anterior</span>
-      </button>
-
-      <div class="pagination-track" id="dotsPagination" aria-hidden="true"></div>
-
-      <button class="nav-control-btn next-btn" id="btnNextPage" aria-label="Página siguiente">
-        <span>Siguiente</span>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="9 18 15 12 9 6"></polyline>
-        </svg>
-      </button>
-    </footer>
-  </main>
+  </dialog>
 
   <!-- Modal para exportar o restaurar textos -->
   <dialog class="custom-modal" id="exportModal">
